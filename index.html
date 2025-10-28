@@ -1,0 +1,2193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>锻刀手套计算器 - 最终版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            margin-top: 30px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+        
+        .input-section {
+            margin-bottom: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-group h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+        
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .input-group input:focus, .input-group select:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            outline: none;
+        }
+        
+        .autocomplete {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .autocomplete-items {
+            position: absolute;
+            border: 1px solid #d4d4d4;
+            border-bottom: none;
+            border-top: none;
+            z-index: 9999;
+            top: 100%;
+            left: 0;
+            right: 0;
+            max-height: 200px;
+            overflow-y: auto;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: none;
+        }
+        
+        .autocomplete-items div {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #fff;
+            border-bottom: 1px solid #d4d4d4;
+        }
+        
+        .autocomplete-items div:hover {
+            background-color: #e9e9e9;
+        }
+        
+        .autocomplete-active {
+            background-color: #3498db !important;
+            color: white;
+        }
+        
+        /* 横向布局样式 */
+        .items-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .item-card {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            transition: all 0.3s;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .item-card:hover {
+            background-color: #e9ecef;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .item-number {
+            background-color: #3498db;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .level-indicator {
+            background-color: #e74c3c;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .item-properties {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            flex-grow: 1;
+        }
+        
+        .property {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .property-label {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.75rem;
+        }
+        
+        .property-value {
+            color: #495057;
+            font-size: 0.8rem;
+        }
+        
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .calculate-btn {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        .calculate-btn:hover {
+            background-color: #27ae60;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+        }
+        
+        .reset-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .reset-btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+        
+        .reverse-calc-btn {
+            background-color: #9b59b6;
+            color: white;
+        }
+        
+        .reverse-calc-btn:hover {
+            background-color: #8e44ad;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(155, 89, 182, 0.3);
+        }
+        
+        .result-section {
+            background-color: #2c3e50;
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .result-section h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #ecf0f1;
+        }
+        
+        /* 修改合成结果布局 - 左右互换 */
+        .synthesis-result {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .probability-section {
+            background-color: #34495e;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .probability-section h3 {
+            color: #3498db;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .probability-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .probability-item {
+            background-color: #2c3e50;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 10px;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .probability-item:hover {
+            background-color: #3c5166;
+        }
+        
+        .probability-item.selected {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .result-item {
+            background-color: #34495e;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .result-item h3 {
+            color: #3498db;
+            margin-bottom: 15px;
+        }
+        
+        .result-properties {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            text-align: left;
+        }
+        
+        .result-properties .property-label {
+            color: white;
+        }
+        
+        .result-properties .property-value {
+            color: white;
+        }
+        
+        .wear-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.8rem;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .success-message {
+            color: #2ecc71;
+            font-size: 0.8rem;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .rules-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+            border-left: 5px solid #3498db;
+        }
+        
+        .rules-section h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .rules-section ul {
+            margin-left: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .rules-section li {
+            margin-bottom: 8px;
+        }
+        
+        /* 下拉框状态指示器 */
+        .dropdown-status {
+            position: absolute;
+            top: -25px;
+            right: 0;
+            background-color: #3498db;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            display: none;
+        }
+        
+        /* 输入框聚焦状态 */
+        .input-focused {
+            border-color: #3498db !important;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2) !important;
+        }
+        
+        /* 反向计算区域样式 - 改为卡片样式 */
+        .reverse-calculation {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 5px solid #9b59b6;
+        }
+        
+        .reverse-calculation h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .reverse-items-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .reverse-item-card {
+            background-color: #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            transition: all 0.3s;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .reverse-item-card:hover {
+            background-color: #dee2e6;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 新增：可用合成材料区域 */
+        .available-materials {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        .available-materials h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .materials-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .material-item {
+            background-color: #f8f9fa;
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            border-left: 3px solid #3498db;
+        }
+        
+        .material-name {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .material-grade {
+            color: #6c757d;
+            font-size: 0.8rem;
+        }
+        
+        .material-sources {
+            color: #6c757d;
+            font-size: 0.75rem;
+            margin-top: 3px;
+        }
+        
+        .reverse-result {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .reverse-result h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .reverse-result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .reverse-result-item:last-child {
+            border-bottom: none;
+        }
+        
+        /* 下拉按钮样式 */
+        .dropdown-btn {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: #6c757d;
+            cursor: pointer;
+            display: none;
+        }
+        
+        .dropdown-btn:hover {
+            color: #495057;
+        }
+        
+        .input-with-dropdown {
+            position: relative;
+        }
+        
+        @media (max-width: 1200px) {
+            .items-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .reverse-items-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .materials-list {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .items-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .synthesis-result {
+                grid-template-columns: 1fr;
+            }
+            
+            .result-properties {
+                grid-template-columns: 1fr;
+            }
+            
+            .probability-item {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .materials-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>锻刀手套计算器</h1>
+        
+        <!-- 反向计算区域 - 改为卡片样式 -->
+        <div class="reverse-calculation">
+            <h3>反向磨损计算</h3>
+            <div class="reverse-items-container">
+                <div class="reverse-item-card">
+                    <label for="target-item">目标物品</label>
+                    <div class="autocomplete input-with-dropdown">
+                        <input type="text" id="target-item" class="item-input" placeholder="输入目标物品名称" autocomplete="off">
+                        <button class="dropdown-btn" id="target-item-dropdown-btn">▼</button>
+                    </div>
+                    <div class="error-message" id="target-item-error">请选择有效的目标物品</div>
+                </div>
+                <div class="reverse-item-card">
+                    <label for="target-wear">目标磨损值</label>
+                    <input type="number" id="target-wear" min="0" max="1" step="0.01" placeholder="0.00 - 1.00">
+                    <div class="error-message" id="target-wear-error">目标磨损值必须在0-1之间</div>
+                </div>
+            </div>
+            
+            <!-- 新增：可用合成材料区域 -->
+            <div class="available-materials" id="available-materials">
+                <h4>可用合成材料</h4>
+                <div class="materials-list" id="materials-list">
+                    <!-- 可用合成材料将通过JavaScript动态生成 -->
+                </div>
+            </div>
+            
+            <div class="buttons">
+                <button class="reverse-calc-btn" id="reverse-calculate">计算所需磨损</button>
+            </div>
+            <div class="reverse-result" id="reverse-result">
+                <h4>所需输入物品磨损值</h4>
+                <div id="reverse-result-content">
+                    <!-- 反向计算结果将通过JavaScript动态生成 -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="input-section">
+            <div class="input-group">
+                <h3>物品选择与磨损值</h3>
+                <div class="items-container" id="item-inputs">
+                    <!-- 物品卡片将通过JavaScript动态生成 -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="buttons">
+            <button class="calculate-btn" id="calculate">开始合成</button>
+            <button class="reset-btn" id="reset">重置数据</button>
+        </div>
+        
+        <div class="result-section" id="result-section" style="display: none;">
+            <h2>合成结果</h2>
+            <div class="synthesis-result">
+                <!-- 左右互换：概率分布在左，合成物品在右 -->
+                <div class="probability-section">
+                    <h3>所有可能结果</h3>
+                    <p style="text-align: center; margin-bottom: 15px; color: #bdc3c7;">点击选择查看详情</p>
+                    <div class="probability-list" id="probability-list">
+                        <!-- 概率分布将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+                <div class="result-item">
+                    <h3>合成物品</h3>
+                    <div class="result-properties" id="synthesis-result">
+                        <!-- 合成结果将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="rules-section">
+            <h3>炼金磨损公式</h3>
+            <ul>
+                <li>合成物品的磨损值 = 平均归一化磨损 × (合成物品最高磨损 - 合成物品最低磨损) + 合成物品最低磨损</li>
+                <li>归一化磨损 = (输入磨损 - 输入物品最低磨损) / (输入物品最高磨损 - 输入物品最低磨损)</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // 物品数据库 - 将Excel表格数据转换为JavaScript数组
+const itemDatabase = [
+    { id: 1, name: "AK-47 | 霓虹革命", minWear: 0, maxWear: 0.8, sources: ["伽马2号武器箱"], grade: 2 },
+    { id: 2, name: "法玛斯 | 防滚架", minWear: 0, maxWear: 1, sources: ["伽马2号武器箱"], grade: 2 },
+    { id: 3, name: "M4A1 消音型 | 机械工业", minWear: 0, maxWear: 0.8, sources: ["伽马武器箱"], grade: 2 },
+    { id: 4, name: "格洛克 18 型 | 荒野反叛", minWear: 0, maxWear: 0.7, sources: ["伽马武器箱"], grade: 2 },
+    { id: 5, name: "M9 刺刀（★）|传说", minWear: 0, maxWear: 0.65, sources: ["伽马2号武器箱", "伽马武器箱"], grade: 1 },
+    { id: 6, name: "M9 刺刀（★）|伽玛多普勒", minWear: 0, maxWear: 0.08, sources: ["伽马2号武器箱", "伽马武器箱"], grade: 1 },
+    { id: 7, name: "M9 刺刀（★）|澄澈之水", minWear: 0, maxWear: 0.5, sources: ["伽马2号武器箱", "伽马武器箱"], grade: 1 },
+    { id: 8, name: "M9 刺刀（★）|自动化", minWear: 0, maxWear: 0.85, sources: ["伽马2号武器箱", "伽马武器箱"], grade: 1 },
+    { id: 9, name: "M9 刺刀（★）|自由之手", minWear: 0, maxWear: 0.48, sources: ["伽马2号武器箱", "伽马武器箱"], grade: 1 },
+    { id: 10, name: "M9 刺刀（★）|黑色层压板", minWear: 0, maxWear: 1, sources: ["伽马2号武器箱", "伽马武器箱"], grade: 1 },
+    { id: 11, name: "刺刀（★）|传说", minWear: 0, maxWear: 0.65, sources: ["伽马2号武器箱", "伽马武器箱"], grade: 1 },
+    { id: 12, name: "刺刀（★）|伽玛多普勒", minWear: 0, maxWear: 0.08, sources: ["伽马2号武器箱", "伽马武器箱"], grade: 1 },
+    { id: 13, name: "刺刀（★）|澄澈之水", minWear: 0, maxWear: 0.5, sources: ["伽马2号武器箱", "伽马武器箱"], grade: 1 },
+    { id: 14, name: "刺刀（★）|自动化", minWear: 0, maxWear: 0.85, sources: ["伽马2号武器箱", "伽马武器箱"], grade: 1 },
+    { id: 15, name: "刺刀（★）|自由之手", minWear: 0, maxWear: 0.48, sources: ["伽马2号武器箱", "伽马武器箱"], grade: 1 },
+    { id: 16, name: "刺刀（★）|黑色层压板", minWear: 0, maxWear: 1, sources: ["伽马2号武器箱", "伽马武器箱"], grade: 1 },
+    { id: 17, name: "折叠刀（★）|传说", minWear: 0, maxWear: 0.65, sources: ["伽马2号武器箱", "伽马武器箱"], grade: 1 },
+    { id: 18, name: "折叠刀（★）|伽玛多普勒", minWear: 0, maxWear: 0.08, sources: ["伽马2号武器箱", "伽马武器箱"], grade: 1 },
+    { id: 19, name: "折叠刀（★）|澄澈之水", minWear: 0, maxWear: 0.5, sources: ["伽马2号武器箱", "伽马武器箱"], grade: 1 },
+    { id: 20, name: "折叠刀（★）|自动化", minWear: 0, maxWear: 0.85, sources: ["伽马2号武器箱", "伽马武器箱"], grade: 1 },
+    { id: 21, name: "折叠刀（★）|自由之手", minWear: 0, maxWear: 0.48, sources: ["伽马2号武器箱", "伽马武器箱"], grade: 1 },
+    { id: 22, name: "折叠刀（★）|黑色层压板", minWear: 0, maxWear: 1, sources: ["伽马2号武器箱", "伽马武器箱"], grade: 1 },
+    { id: 23, name: "爪子刀（★）|传说", minWear: 0, maxWear: 0.65, sources: ["伽马2号武器箱", "伽马武器箱"], grade: 1 },
+    { id: 24, name: "爪子刀（★）|伽玛多普勒", minWear: 0, maxWear: 0.08, sources: ["伽马2号武器箱", "伽马武器箱"], grade: 1 },
+    { id: 25, name: "爪子刀（★）|澄澈之水", minWear: 0, maxWear: 0.5, sources: ["伽马2号武器箱", "伽马武器箱"], grade: 1 },
+    { id: 26, name: "爪子刀（★）|自动化", minWear: 0, maxWear: 0.85, sources: ["伽马2号武器箱", "伽马武器箱"], grade: 1 },
+    { id: 27, name: "爪子刀（★）|自由之手", minWear: 0, maxWear: 0.48, sources: ["伽马2号武器箱", "伽马武器箱"], grade: 1 },
+    { id: 28, name: "爪子刀（★）|黑色层压板", minWear: 0, maxWear: 1, sources: ["伽马2号武器箱", "伽马武器箱"], grade: 1 },
+    { id: 29, name: "穿肠刀（★）|传说", minWear: 0, maxWear: 0.65, sources: ["伽马2号武器箱", "伽马武器箱"], grade: 1 },
+    { id: 30, name: "穿肠刀（★）|伽玛多普勒", minWear: 0, maxWear: 0.08, sources: ["伽马2号武器箱", "伽马武器箱"], grade: 1 },
+    { id: 31, name: "穿肠刀（★）|澄澈之水", minWear: 0, maxWear: 0.5, sources: ["伽马2号武器箱", "伽马武器箱"], grade: 1 },
+    { id: 32, name: "穿肠刀（★）|自动化", minWear: 0, maxWear: 0.85, sources: ["伽马2号武器箱", "伽马武器箱"], grade: 1 },
+    { id: 33, name: "穿肠刀（★）|自由之手", minWear: 0, maxWear: 0.48, sources: ["伽马2号武器箱", "伽马武器箱"], grade: 1 },
+    { id: 34, name: "穿肠刀（★）|黑色层压板", minWear: 0, maxWear: 1, sources: ["伽马2号武器箱", "伽马武器箱"], grade: 1 },
+    { id: 35, name: "AK-47 | 夜愿", minWear: 0, maxWear: 1, sources: ["梦魇武器箱"], grade: 2 },
+    { id: 36, name: "MP9 | 星使", minWear: 0, maxWear: 0.8, sources: ["梦魇武器箱"], grade: 2 },
+    { id: 37, name: "AK-47 | 抽象派 1337", minWear: 0, maxWear: 0.65, sources: ["“激流大行动”武器箱"], grade: 2 },
+    { id: 38, name: "沙漠之鹰 | 纵横波涛", minWear: 0, maxWear: 1, sources: ["“激流大行动”武器箱"], grade: 2 },
+    { id: 39, name: "穿肠刀（★）|传说", minWear: 0, maxWear: 0.65, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 40, name: "穿肠刀（★）|伽玛多普勒", minWear: 0, maxWear: 0.08, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 41, name: "穿肠刀（★）|澄澈之水", minWear: 0, maxWear: 0.5, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 42, name: "穿肠刀（★）|自动化", minWear: 0, maxWear: 0.85, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 43, name: "穿肠刀（★）|自由之手", minWear: 0, maxWear: 0.48, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 44, name: "弯刀（★）|黑色层压板", minWear: 0, maxWear: 1, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 45, name: "弯刀（★）|伽玛多普勒", minWear: 0, maxWear: 0.08, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 46, name: "弯刀（★）|澄澈之水", minWear: 0, maxWear: 0.5, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 47, name: "弯刀（★）|自动化", minWear: 0, maxWear: 0.85, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 48, name: "弯刀（★）|自由之手", minWear: 0, maxWear: 0.48, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 49, name: "弯刀（★）|黑色层压板", minWear: 0, maxWear: 1, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 50, name: "暗影双匕（★）|传说", minWear: 0, maxWear: 0.65, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 51, name: "暗影双匕（★）|伽玛多普勒", minWear: 0, maxWear: 0.08, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 52, name: "暗影双匕（★）|澄澈之水", minWear: 0, maxWear: 0.5, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 53, name: "暗影双匕（★）|自动化", minWear: 0, maxWear: 0.85, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 54, name: "暗影双匕（★）|自由之手", minWear: 0, maxWear: 0.48, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 55, name: "暗影双匕（★）|黑色层压板", minWear: 0, maxWear: 1, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 56, name: "猎杀者匕首（★）|传说", minWear: 0, maxWear: 0.65, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 57, name: "猎杀者匕首（★）|伽玛多普勒", minWear: 0, maxWear: 0.08, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 58, name: "猎杀者匕首（★）|澄澈之水", minWear: 0, maxWear: 0.5, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 59, name: "猎杀者匕首（★）|自动化", minWear: 0, maxWear: 0.85, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 60, name: "猎杀者匕首（★）|自由之手", minWear: 0, maxWear: 0.48, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 61, name: "猎杀者匕首（★）|黑色层压板", minWear: 0, maxWear: 1, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 62, name: "蝴蝶刀（★）|传说", minWear: 0, maxWear: 0.08, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 63, name: "蝴蝶刀（★）|伽玛多普勒", minWear: 0, maxWear: 0.5, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 64, name: "蝴蝶刀（★）|澄澈之水", minWear: 0, maxWear: 0.85, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 65, name: "蝴蝶刀（★）|自动化", minWear: 0, maxWear: 0.48, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 66, name: "蝴蝶刀（★）|自由之手", minWear: 0, maxWear: 1, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 67, name: "蝴蝶刀（★）|黑色层压板", minWear: 0, maxWear: 1, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 68, name: "鲍伊猎刀（★）|传说", minWear: 0, maxWear: 0.65, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 69, name: "鲍伊猎刀（★）|伽玛多普勒", minWear: 0, maxWear: 0.08, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 70, name: "鲍伊猎刀（★）|澄澈之水", minWear: 0, maxWear: 0.5, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 71, name: "鲍伊猎刀（★）|自动化", minWear: 0, maxWear: 0.85, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 72, name: "鲍伊猎刀（★）|自由之手", minWear: 0, maxWear: 0.48, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 73, name: "鲍伊猎刀（★）|黑色层压板", minWear: 0, maxWear: 1, sources: ["“激流大行动”武器箱", "梦魇武器箱"], grade: 1 },
+    { id: 74, name: "运动手套（★）|弹弓", minWear: 0.06, maxWear: 1, sources: ["反冲武器箱", "“狂牙大行动”武器箱", "蛇噬武器箱"], grade: 1 },
+    { id: 75, name: "运动手套（★）|猩红头巾", minWear: 0.06, maxWear: 0.8, sources: ["反冲武器箱", "“狂牙大行动”武器箱", "蛇噬武器箱"], grade: 1 },
+    { id: 76, name: "运动手套（★）|大型猎物", minWear: 0.06, maxWear: 0.8, sources: ["反冲武器箱", "“狂牙大行动”武器箱", "蛇噬武器箱"], grade: 1 },
+    { id: 77, name: "运动手套（★）|夜行衣", minWear: 0.06, maxWear: 0.8, sources: ["反冲武器箱", "“狂牙大行动”武器箱", "蛇噬武器箱"], grade: 1 },
+    { id: 78, name: "驾驶手套（★）|雪豹", minWear: 0.06, maxWear: 0.8, sources: ["反冲武器箱", "“狂牙大行动”武器箱", "蛇噬武器箱"], grade: 1 },
+    { id: 79, name: "驾驶手套（★）|西装革履", minWear: 0.06, maxWear: 0.8, sources: ["反冲武器箱", "“狂牙大行动”武器箱", "蛇噬武器箱"], grade: 1 },
+    { id: 80, name: "驾驶手套（★）|美洲豹女王", minWear: 0.06, maxWear: 0.8, sources: ["反冲武器箱", "“狂牙大行动”武器箱", "蛇噬武器箱"], grade: 1 },
+    { id: 81, name: "驾驶手套（★）|绯红列赞", minWear: 0.06, maxWear: 0.8, sources: ["反冲武器箱", "“狂牙大行动”武器箱", "蛇噬武器箱"], grade: 1 },
+    { id: 82, name: "裹手（★）|长颈鹿", minWear: 0.06, maxWear: 0.8, sources: ["反冲武器箱", "“狂牙大行动”武器箱", "蛇噬武器箱"], grade: 1 },
+    { id: 83, name: "裹手（★）|警告!", minWear: 0.06, maxWear: 0.8, sources: ["反冲武器箱", "“狂牙大行动”武器箱", "蛇噬武器箱"], grade: 1 },
+    { id: 84, name: "裹手（★）|蟒蛇", minWear: 0.06, maxWear: 0.8, sources: ["反冲武器箱", "“狂牙大行动”武器箱", "蛇噬武器箱"], grade: 1 },
+    { id: 85, name: "裹手（★）|沙漠头巾", minWear: 0.06, maxWear: 0.8, sources: ["反冲武器箱", "“狂牙大行动”武器箱", "蛇噬武器箱"], grade: 1 },
+    { id: 86, name: "狂牙手套（★）|黄色斑纹", minWear: 0.06, maxWear: 0.8, sources: ["反冲武器箱", "“狂牙大行动”武器箱", "蛇噬武器箱"], grade: 1 },
+    { id: 87, name: "狂牙手套（★）|针尖", minWear: 0.06, maxWear: 0.8, sources: ["反冲武器箱", "“狂牙大行动”武器箱", "蛇噬武器箱"], grade: 1 },
+    { id: 88, name: "狂牙手套（★）|翡翠", minWear: 0.06, maxWear: 0.8, sources: ["反冲武器箱", "“狂牙大行动”武器箱", "蛇噬武器箱"], grade: 1 },
+    { id: 89, name: "狂牙手套（★）|精神错乱", minWear: 0.06, maxWear: 0.8, sources: ["反冲武器箱", "“狂牙大行动”武器箱", "蛇噬武器箱"], grade: 1 },
+    { id: 90, name: "摩托手套（★）|血压", minWear: 0.06, maxWear: 0.8, sources: ["反冲武器箱", "“狂牙大行动”武器箱", "蛇噬武器箱"], grade: 1 },
+    { id: 91, name: "摩托手套（★）|终点线", minWear: 0.06, maxWear: 0.8, sources: ["反冲武器箱", "“狂牙大行动”武器箱", "蛇噬武器箱"], grade: 1 },
+    { id: 92, name: "摩托手套（★）|第三特种兵连", minWear: 0.06, maxWear: 0.8, sources: ["反冲武器箱", "“狂牙大行动”武器箱", "蛇噬武器箱"], grade: 1 },
+    { id: 93, name: "摩托手套（★）|小心烟雾弹", minWear: 0.06, maxWear: 0.8, sources: ["反冲武器箱", "“狂牙大行动”武器箱", "蛇噬武器箱"], grade: 1 },
+    { id: 94, name: "专业手套（★）|陆军少尉长官", minWear: 0.06, maxWear: 0.8, sources: ["反冲武器箱", "“狂牙大行动”武器箱", "蛇噬武器箱"], grade: 1 },
+    { id: 95, name: "专业手套（★）|老虎精英", minWear: 0.06, maxWear: 0.8, sources: ["反冲武器箱", "“狂牙大行动”武器箱", "蛇噬武器箱"], grade: 1 },
+    { id: 96, name: "专业手套（★）|渐变大理石", minWear: 0.06, maxWear: 0.8, sources: ["反冲武器箱", "“狂牙大行动”武器箱", "蛇噬武器箱"], grade: 1 },
+    { id: 97, name: "专业手套（★）|一线特工", minWear: 0.06, maxWear: 0.8, sources: ["反冲武器箱", "“狂牙大行动”武器箱", "蛇噬武器箱"], grade: 1 },
+    { id: 98, name: "M4A4 | 活色生香", minWear: 0, maxWear: 0.79, sources: ["蛇噬武器箱"], grade: 2 },
+    { id: 99, name: "USP 消音版 | 倒吊人", minWear: 0, maxWear: 1, sources: ["蛇噬武器箱"], grade: 2 },
+    { id: 100, name: "AWP | 迷人眼", minWear: 0, maxWear: 0.7, sources: ["反冲武器箱"], grade: 2 },
+    { id: 101, name: "USP 消音版 | 印花集", minWear: 0, maxWear: 0.85, sources: ["反冲武器箱"], grade: 2 },
+    { id: 102, name: "M4A1 消音型 | 印花集", minWear: 0, maxWear: 0.8, sources: ["“狂牙大行动”武器箱"], grade: 2 },
+    { id: 103, name: "格洛克 18 型 | 黑色魅影", minWear: 0, maxWear: 1, sources: ["“狂牙大行动”武器箱"], grade: 2 },
+    { id: 104, name: "运动手套（★）|迈阿密风云", minWear: 0.06, maxWear: 0.8, sources: ["命悬一线武器箱", "变革武器箱"], grade: 1 },
+    { id: 105, name: "运动手套（★）|双栖", minWear: 0.06, maxWear: 0.8, sources: ["命悬一线武器箱", "变革武器箱"], grade: 1 },
+    { id: 106, name: "运动手套（★）|欧米伽", minWear: 0.06, maxWear: 0.8, sources: ["命悬一线武器箱", "变革武器箱"], grade: 1 },
+    { id: 107, name: "运动手套（★）|青铜形态", minWear: 0.06, maxWear: 0.8, sources: ["命悬一线武器箱", "变革武器箱"], grade: 1 },
+    { id: 108, name: "驾驶手套（★）|墨绿色调", minWear: 0.06, maxWear: 0.8, sources: ["命悬一线武器箱", "变革武器箱"], grade: 1 },
+    { id: 109, name: "驾驶手套（★）|王蛇", minWear: 0.06, maxWear: 0.8, sources: ["命悬一线武器箱", "变革武器箱"], grade: 1 },
+    { id: 110, name: "驾驶手套（★）|蓝紫格子", minWear: 0.06, maxWear: 0.8, sources: ["命悬一线武器箱", "变革武器箱"], grade: 1 },
+    { id: 111, name: "驾驶手套（★）|超越", minWear: 0.06, maxWear: 0.8, sources: ["命悬一线武器箱", "变革武器箱"], grade: 1 },
+    { id: 112, name: "裹手（★）|防水布胶带", minWear: 0.06, maxWear: 0.8, sources: ["命悬一线武器箱", "变革武器箱"], grade: 1 },
+    { id: 113, name: "裹手（★）|钴蓝骷髅", minWear: 0.06, maxWear: 0.8, sources: ["命悬一线武器箱", "变革武器箱"], grade: 1 },
+    { id: 114, name: "裹手（★）|森林色调", minWear: 0.06, maxWear: 0.8, sources: ["命悬一线武器箱", "变革武器箱"], grade: 1 },
+    { id: 115, name: "裹手（★）|套印", minWear: 0.06, maxWear: 0.8, sources: ["命悬一线武器箱", "变革武器箱"], grade: 1 },
+    { id: 116, name: "摩托手套（★）|玳瑁", minWear: 0.06, maxWear: 0.8, sources: ["命悬一线武器箱", "变革武器箱"], grade: 1 },
+    { id: 117, name: "摩托手套（★）|多边形", minWear: 0.06, maxWear: 0.8, sources: ["命悬一线武器箱", "变革武器箱"], grade: 1 },
+    { id: 118, name: "摩托手套（★）|嘭!", minWear: 0.06, maxWear: 0.8, sources: ["命悬一线武器箱", "变革武器箱"], grade: 1 },
+    { id: 119, name: "摩托手套（★）|交运", minWear: 0.06, maxWear: 0.8, sources: ["命悬一线武器箱", "变革武器箱"], grade: 1 },
+    { id: 120, name: "九头蛇手套（★）|表面淬火", minWear: 0.06, maxWear: 0.8, sources: ["命悬一线武器箱", "变革武器箱"], grade: 1 },
+    { id: 121, name: "九头蛇手套（★）|翡翠色调", minWear: 0.06, maxWear: 0.8, sources: ["命悬一线武器箱", "变革武器箱"], grade: 1 },
+    { id: 122, name: "九头蛇手套（★）|红树林", minWear: 0.06, maxWear: 0.8, sources: ["命悬一线武器箱", "变革武器箱"], grade: 1 },
+    { id: 123, name: "九头蛇手套（★）|响尾蛇", minWear: 0.06, maxWear: 0.8, sources: ["命悬一线武器箱", "变革武器箱"], grade: 1 },
+    { id: 124, name: "专业手套（★）|狩鹿", minWear: 0.06, maxWear: 0.8, sources: ["命悬一线武器箱", "变革武器箱"], grade: 1 },
+    { id: 125, name: "专业手套（★）|渐变之色", minWear: 0.06, maxWear: 0.8, sources: ["命悬一线武器箱", "变革武器箱"], grade: 1 },
+    { id: 126, name: "专业手套（★）|深红之网", minWear: 0.06, maxWear: 0.8, sources: ["命悬一线武器箱", "变革武器箱"], grade: 1 },
+    { id: 127, name: "专业手套（★）|大腕", minWear: 0.06, maxWear: 0.8, sources: ["命悬一线武器箱", "变革武器箱"], grade: 1 },
+    { id: 128, name: "AK-47 | 一发入魂", minWear: 0, maxWear: 1, sources: ["变革武器箱"], grade: 2 },
+    { id: 129, name: "M4A4 | 反冲精英", minWear: 0, maxWear: 0.8, sources: ["变革武器箱"], grade: 2 },
+    { id: 130, name: "M4A4 | 黑色魅影", minWear: 0, maxWear: 0.9, sources: ["命悬一线武器箱"], grade: 2 },
+    { id: 131, name: "MP7 | 血腥运动", minWear: 0, maxWear: 0.65, sources: ["命悬一线武器箱"], grade: 2 },
+    { id: 132, name: "加利尔 AR | 喧闹骷髅", minWear: 0.35, maxWear: 0.85, sources: ["幻彩武器箱"], grade: 2 },
+    { id: 133, name: "AWP | 无畏战神", minWear: 0.1, maxWear: 0.2, sources: ["幻彩武器箱"], grade: 2 },
+    { id: 134, name: "M4A1 消音型 | 暴怒野兽", minWear: 0, maxWear: 1, sources: ["幻彩2号武器箱"], grade: 2 },
+    { id: 135, name: "MAC-10 | 霓虹骑士", minWear: 0, maxWear: 0.45, sources: ["幻彩2号武器箱"], grade: 2 },
+    { id: 136, name: "M4A1 消音型 | 女火神之炽焰", minWear: 0, maxWear: 0.99, sources: ["幻彩3号武器箱"], grade: 2 },
+    { id: 137, name: "PP-野牛 | 阿努比斯之审判", minWear: 0, maxWear: 0.5, sources: ["幻彩3号武器箱"], grade: 2 },
+    { id: 138, name: "M9 刺刀（★）|外表生锈", minWear: 0.4, maxWear: 1, sources: ["幻彩武器箱", "幻彩2号武器箱", "幻彩3号武器箱"], grade: 1 },
+    { id: 139, name: "M9 刺刀（★）|多普勒", minWear: 0, maxWear: 0.08, sources: ["幻彩武器箱", "幻彩2号武器箱", "幻彩3号武器箱"], grade: 1 },
+    { id: 140, name: "M9 刺刀（★）|大马士革钢", minWear: 0, maxWear: 0.5, sources: ["幻彩武器箱", "幻彩2号武器箱", "幻彩3号武器箱"], grade: 1 },
+    { id: 141, name: "M9 刺刀（★）|渐变大理石", minWear: 0, maxWear: 0.08, sources: ["幻彩武器箱", "幻彩2号武器箱", "幻彩3号武器箱"], grade: 1 },
+    { id: 142, name: "M9 刺刀（★）|致命紫罗兰", minWear: 0.06, maxWear: 0.8, sources: ["幻彩武器箱", "幻彩2号武器箱", "幻彩3号武器箱"], grade: 1 },
+    { id: 143, name: "M9 刺刀（★）|虎牙", minWear: 0, maxWear: 0.08, sources: ["幻彩武器箱", "幻彩2号武器箱", "幻彩3号武器箱"], grade: 1 },
+    { id: 144, name: "刺刀（★）|外表生锈", minWear: 0.4, maxWear: 1, sources: ["幻彩武器箱", "幻彩2号武器箱", "幻彩3号武器箱"], grade: 1 },
+    { id: 145, name: "刺刀（★）|多普勒", minWear: 0, maxWear: 0.08, sources: ["幻彩武器箱", "幻彩2号武器箱", "幻彩3号武器箱"], grade: 1 },
+    { id: 146, name: "刺刀（★）|大马士革钢", minWear: 0, maxWear: 0.5, sources: ["幻彩武器箱", "幻彩2号武器箱", "幻彩3号武器箱"], grade: 1 },
+    { id: 147, name: "刺刀（★）|渐变大理石", minWear: 0, maxWear: 0.08, sources: ["幻彩武器箱", "幻彩2号武器箱", "幻彩3号武器箱"], grade: 1 },
+    { id: 148, name: "刺刀（★）|致命紫罗兰", minWear: 0.06, maxWear: 0.8, sources: ["幻彩武器箱", "幻彩2号武器箱", "幻彩3号武器箱"], grade: 1 },
+    { id: 149, name: "刺刀（★）|虎牙", minWear: 0, maxWear: 0.08, sources: ["幻彩武器箱", "幻彩2号武器箱", "幻彩3号武器箱"], grade: 1 },
+    { id: 150, name: "折叠刀（★）|外表生锈", minWear: 0.4, maxWear: 1, sources: ["幻彩武器箱", "幻彩2号武器箱", "幻彩3号武器箱"], grade: 1 },
+    { id: 151, name: "折叠刀（★）|多普勒", minWear: 0, maxWear: 0.08, sources: ["幻彩武器箱", "幻彩2号武器箱", "幻彩3号武器箱"], grade: 1 },
+    { id: 152, name: "折叠刀（★）|大马士革钢", minWear: 0, maxWear: 0.5, sources: ["幻彩武器箱", "幻彩2号武器箱", "幻彩3号武器箱"], grade: 1 },
+    { id: 153, name: "折叠刀（★）|渐变大理石", minWear: 0, maxWear: 0.08, sources: ["幻彩武器箱", "幻彩2号武器箱", "幻彩3号武器箱"], grade: 1 },
+    { id: 154, name: "折叠刀（★）|致命紫罗兰", minWear: 0.06, maxWear: 0.8, sources: ["幻彩武器箱", "幻彩2号武器箱", "幻彩3号武器箱"], grade: 1 },
+    { id: 155, name: "折叠刀（★）|虎牙", minWear: 0, maxWear: 0.08, sources: ["幻彩武器箱", "幻彩2号武器箱", "幻彩3号武器箱"], grade: 1 },
+    { id: 156, name: "爪子刀（★）|外表生锈", minWear: 0.4, maxWear: 1, sources: ["幻彩武器箱", "幻彩2号武器箱", "幻彩3号武器箱"], grade: 1 },
+    { id: 157, name: "爪子刀（★）|多普勒", minWear: 0, maxWear: 0.08, sources: ["幻彩武器箱", "幻彩2号武器箱", "幻彩3号武器箱"], grade: 1 },
+    { id: 158, name: "爪子刀（★）|大马士革钢", minWear: 0, maxWear: 0.5, sources: ["幻彩武器箱", "幻彩2号武器箱", "幻彩3号武器箱"], grade: 1 },
+    { id: 159, name: "爪子刀（★）|渐变大理石", minWear: 0, maxWear: 0.08, sources: ["幻彩武器箱", "幻彩2号武器箱", "幻彩3号武器箱"], grade: 1 },
+    { id: 160, name: "爪子刀（★）|致命紫罗兰", minWear: 0.06, maxWear: 0.8, sources: ["幻彩武器箱", "幻彩2号武器箱", "幻彩3号武器箱"], grade: 1 },
+    { id: 161, name: "爪子刀（★）|虎牙", minWear: 0, maxWear: 0.08, sources: ["幻彩武器箱", "幻彩2号武器箱", "幻彩3号武器箱"], grade: 1 },
+    { id: 162, name: "穿肠刀（★）|外表生锈", minWear: 0.4, maxWear: 1, sources: ["幻彩武器箱", "幻彩2号武器箱", "幻彩3号武器箱"], grade: 1 },
+    { id: 163, name: "穿肠刀（★）|多普勒", minWear: 0, maxWear: 0.08, sources: ["幻彩武器箱", "幻彩2号武器箱", "幻彩3号武器箱"], grade: 1 },
+    { id: 164, name: "穿肠刀（★）|大马士革钢", minWear: 0, maxWear: 0.5, sources: ["幻彩武器箱", "幻彩2号武器箱", "幻彩3号武器箱"], grade: 1 },
+    { id: 165, name: "穿肠刀（★）|渐变大理石", minWear: 0, maxWear: 0.08, sources: ["幻彩武器箱", "幻彩2号武器箱", "幻彩3号武器箱"], grade: 1 },
+    { id: 166, name: "穿肠刀（★）|致命紫罗兰", minWear: 0.06, maxWear: 0.8, sources: ["幻彩武器箱", "幻彩2号武器箱", "幻彩3号武器箱"], grade: 1 },
+    { id: 167, name: "穿肠刀（★）|虎牙", minWear: 0, maxWear: 0.08, sources: ["幻彩武器箱", "幻彩2号武器箱", "幻彩3号武器箱"], grade: 1 },
+    { id: 168, name: "SSG 08 | 炎龙之焰", minWear: 0, maxWear: 0.5, sources: ["手套武器箱"], grade: 2 },
+    { id: 169, name: "M4A4 | 喧嚣杀戮", minWear: 0, maxWear: 0.7, sources: ["手套武器箱"], grade: 2 },
+    { id: 170, name: "AWP | 鬼退治", minWear: 0, maxWear: 0.5, sources: ["“九头蛇大行动”武器箱"], grade: 2 },
+    { id: 171, name: "FN57 | 暴怒野兽", minWear: 0, maxWear: 1, sources: ["“九头蛇大行动”武器箱"], grade: 2 },
+    { id: 172, name: "专业手套（★）|元勋", minWear: 0.06, maxWear: 0.8, sources: ["手套武器箱", "“九头蛇大行动”武器箱"], grade: 1 },
+    { id: 173, name: "专业手套（★）|森林DDPAT", minWear: 0.06, maxWear: 0.8, sources: ["手套武器箱", "“九头蛇大行动”武器箱"], grade: 1 },
+    { id: 174, name: "专业手套（★）|深红和服", minWear: 0.06, maxWear: 0.8, sources: ["手套武器箱", "“九头蛇大行动”武器箱"], grade: 1 },
+    { id: 175, name: "专业手套（★）|翠绿之网", minWear: 0.06, maxWear: 0.8, sources: ["手套武器箱", "“九头蛇大行动”武器箱"], grade: 1 },
+    { id: 176, name: "摩托手套（★）|蹦!", minWear: 0.06, maxWear: 0.8, sources: ["手套武器箱", "“九头蛇大行动”武器箱"], grade: 1 },
+    { id: 177, name: "摩托手套（★）|日蚀", minWear: 0.06, maxWear: 0.8, sources: ["手套武器箱", "“九头蛇大行动”武器箱"], grade: 1 },
+    { id: 178, name: "摩托手套（★）|清凉薄荷", minWear: 0.06, maxWear: 0.8, sources: ["手套武器箱", "“九头蛇大行动”武器箱"], grade: 1 },
+    { id: 179, name: "摩托手套（★）|薄荷", minWear: 0.06, maxWear: 0.8, sources: ["手套武器箱", "“九头蛇大行动”武器箱"], grade: 1 },
+    { id: 180, name: "血猎手套（★）|染铜", minWear: 0.06, maxWear: 0.8, sources: ["手套武器箱", "“九头蛇大行动”武器箱"], grade: 1 },
+    { id: 181, name: "血猎手套（★）|游击队", minWear: 0.06, maxWear: 0.8, sources: ["手套武器箱", "“九头蛇大行动”武器箱"], grade: 1 },
+    { id: 182, name: "血猎手套（★）|焦碳", minWear: 0.06, maxWear: 0.8, sources: ["手套武器箱", "“九头蛇大行动”武器箱"], grade: 1 },
+    { id: 183, name: "血猎手套（★）|蛇咬", minWear: 0.06, maxWear: 0.8, sources: ["手套武器箱", "“九头蛇大行动”武器箱"], grade: 1 },
+    { id: 184, name: "裹手（★）|云杉DDPAT", minWear: 0.06, maxWear: 0.8, sources: ["手套武器箱", "“九头蛇大行动”武器箱"], grade: 1 },
+    { id: 185, name: "裹手（★）|屠夫", minWear: 0.06, maxWear: 0.8, sources: ["手套武器箱", "“九头蛇大行动”武器箱"], grade: 1 },
+    { id: 186, name: "裹手（★）|恶土", minWear: 0.06, maxWear: 0.8, sources: ["手套武器箱", "“九头蛇大行动”武器箱"], grade: 1 },
+    { id: 187, name: "裹手（★）|皮革", minWear: 0.06, maxWear: 0.8, sources: ["手套武器箱", "“九头蛇大行动”武器箱"], grade: 1 },
+    { id: 188, name: "运动手套（★）|干旱", minWear: 0.06, maxWear: 0.8, sources: ["手套武器箱", "“九头蛇大行动”武器箱"], grade: 1 },
+    { id: 189, name: "运动手套（★）|树篱迷宫", minWear: 0.06, maxWear: 0.8, sources: ["手套武器箱", "“九头蛇大行动”武器箱"], grade: 1 },
+    { id: 190, name: "运动手套（★）|潘多拉之盒", minWear: 0.06, maxWear: 0.8, sources: ["手套武器箱", "“九头蛇大行动”武器箱"], grade: 1 },
+    { id: 191, name: "运动手套（★）|超导体", minWear: 0.06, maxWear: 0.8, sources: ["手套武器箱", "“九头蛇大行动”武器箱"], grade: 1 },
+    { id: 192, name: "驾驶手套（★）|护卫", minWear: 0.06, maxWear: 0.8, sources: ["手套武器箱", "“九头蛇大行动”武器箱"], grade: 1 },
+    { id: 193, name: "驾驶手套（★）|月色织物", minWear: 0.06, maxWear: 0.8, sources: ["手套武器箱", "“九头蛇大行动”武器箱"], grade: 1 },
+    { id: 194, name: "驾驶手套（★）|深红织物", minWear: 0.06, maxWear: 0.8, sources: ["手套武器箱", "“九头蛇大行动”武器箱"], grade: 1 },
+    { id: 195, name: "驾驶手套（★）|菱背蛇纹", minWear: 0.06, maxWear: 0.8, sources: ["手套武器箱", "“九头蛇大行动”武器箱"], grade: 1 },
+    { id: 196, name: "法玛斯 | 幻灭之旅", minWear: 0, maxWear: 1, sources: ["热潮武器箱"], grade: 2 },
+    { id: 197, name: "AWP | 印花集", minWear: 0, maxWear: 1, sources: ["热潮武器箱"], grade: 2 },
+    { id: 198, name: "求生匕首（★）", minWear: 0, maxWear: 0, sources: ["热潮武器箱", "裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 199, name: "求生匕首（★）|外表生锈", minWear: 0.38, maxWear: 1, sources: ["热潮武器箱"], grade: 1 },
+    { id: 200, name: "求生匕首（★）|多普勒", minWear: 0, maxWear: 0.15, sources: ["热潮武器箱"], grade: 1 },
+    { id: 201, name: "求生匕首（★）|大马士革钢", minWear: 0, maxWear: 0.5, sources: ["热潮武器箱"], grade: 1 },
+    { id: 202, name: "求生匕首（★）|渐变大理石", minWear: 0, maxWear: 0.15, sources: ["热潮武器箱"], grade: 1 },
+    { id: 203, name: "求生匕首（★）|致命紫罗兰", minWear: 0.06, maxWear: 0.8, sources: ["热潮武器箱"], grade: 1 },
+    { id: 204, name: "求生匕首（★）|虎牙", minWear: 0, maxWear: 0.15, sources: ["热潮武器箱"], grade: 1 },
+    { id: 205, name: "流浪者匕首（★）", minWear: 0, maxWear: 0, sources: ["热潮武器箱", "裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 206, name: "流浪者匕首（★）|外表生锈", minWear: 0.38, maxWear: 1, sources: ["热潮武器箱"], grade: 1 },
+    { id: 207, name: "流浪者匕首（★）|多普勒", minWear: 0, maxWear: 0.15, sources: ["热潮武器箱"], grade: 1 },
+    { id: 208, name: "流浪者匕首（★）|大马士革钢", minWear: 0, maxWear: 0.5, sources: ["热潮武器箱"], grade: 1 },
+    { id: 209, name: "流浪者匕首（★）|渐变大理石", minWear: 0, maxWear: 0.15, sources: ["热潮武器箱"], grade: 1 },
+    { id: 210, name: "流浪者匕首（★）|致命紫罗兰", minWear: 0.06, maxWear: 0.8, sources: ["热潮武器箱"], grade: 1 },
+    { id: 211, name: "流浪者匕首（★）|虎牙", minWear: 0, maxWear: 0.15, sources: ["热潮武器箱"], grade: 1 },
+    { id: 212, name: "系绳匕首（★）", minWear: 0, maxWear: 0, sources: ["热潮武器箱", "裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 213, name: "系绳匕首（★）|外表生锈", minWear: 0.38, maxWear: 1, sources: ["热潮武器箱"], grade: 1 },
+    { id: 214, name: "系绳匕首（★）|多普勒", minWear: 0, maxWear: 0.15, sources: ["热潮武器箱"], grade: 1 },
+    { id: 215, name: "系绳匕首（★）|大马士革钢", minWear: 0, maxWear: 0.5, sources: ["热潮武器箱"], grade: 1 },
+    { id: 216, name: "系绳匕首（★）|渐变大理石", minWear: 0, maxWear: 0.15, sources: ["热潮武器箱"], grade: 1 },
+    { id: 217, name: "系绳匕首（★）|致命紫罗兰", minWear: 0.06, maxWear: 0.8, sources: ["热潮武器箱"], grade: 1 },
+    { id: 218, name: "系绳匕首（★）|虎牙", minWear: 0, maxWear: 0.15, sources: ["热潮武器箱"], grade: 1 },
+    { id: 219, name: "骷髅匕首（★）", minWear: 0, maxWear: 0, sources: ["热潮武器箱", "裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 220, name: "骷髅匕首（★）|外表生锈", minWear: 0.38, maxWear: 1, sources: ["热潮武器箱"], grade: 1 },
+    { id: 221, name: "骷髅匕首（★）|多普勒", minWear: 0, maxWear: 0.15, sources: ["热潮武器箱"], grade: 1 },
+    { id: 222, name: "骷髅匕首（★）|大马士革钢", minWear: 0, maxWear: 0.5, sources: ["热潮武器箱"], grade: 1 },
+    { id: 223, name: "骷髅匕首（★）|渐变大理石", minWear: 0, maxWear: 0.15, sources: ["热潮武器箱"], grade: 1 },
+    { id: 224, name: "骷髅匕首（★）|致命紫罗兰", minWear: 0.06, maxWear: 0.8, sources: ["热潮武器箱"], grade: 1 },
+    { id: 225, name: "骷髅匕首（★）|虎牙", minWear: 0, maxWear: 0.15, sources: ["热潮武器箱"], grade: 1 },
+    { id: 226, name: "蝴蝶刀（★）|虎牙", minWear: 0, maxWear: 0.08, sources: ["光谱武器箱", "光谱 2 号武器箱"], grade: 1 },
+    { id: 227, name: "蝴蝶刀（★）|大马士革钢", minWear: 0, maxWear: 0.5, sources: ["光谱武器箱", "光谱 2 号武器箱"], grade: 1 },
+    { id: 228, name: "蝴蝶刀（★）|多普勒", minWear: 0, maxWear: 0.08, sources: ["光谱武器箱", "光谱 2 号武器箱"], grade: 1 },
+    { id: 229, name: "蝴蝶刀（★）|渐变大理石", minWear: 0, maxWear: 0.08, sources: ["光谱武器箱", "光谱 2 号武器箱"], grade: 1 },
+    { id: 230, name: "蝴蝶刀（★）|深红之网", minWear: 0, maxWear: 1, sources: ["“突围大行动”武器箱"], grade: 1 },
+    { id: 231, name: "蝴蝶刀（★）|都市伪装", minWear: 0.06, maxWear: 0.8, sources: ["“突围大行动”武器箱"], grade: 1 },
+    { id: 232, name: "蝴蝶刀（★）|渐变之色", minWear: 0, maxWear: 0.08, sources: ["“突围大行动”武器箱"], grade: 1 },
+    { id: 233, name: "蝴蝶刀（★）|屠夫", minWear: 0.01, maxWear: 0.26, sources: ["“突围大行动”武器箱"], grade: 1 },
+    { id: 234, name: "蝴蝶刀（★）|蓝钢", minWear: 0, maxWear: 1, sources: ["“突围大行动”武器箱"], grade: 1 },
+    { id: 235, name: "蝴蝶刀（★）|噩梦之夜", minWear: 0.06, maxWear: 0.8, sources: ["“突围大行动”武器箱"], grade: 1 },
+    { id: 236, name: "蝴蝶刀（★）|人工染色", minWear: 0, maxWear: 1, sources: ["“突围大行动”武器箱"], grade: 1 },
+    { id: 237, name: "蝴蝶刀（★）|森林DDPAT", minWear: 0.06, maxWear: 0.8, sources: ["“突围大行动”武器箱"], grade: 1 },
+    { id: 238, name: "蝴蝶刀（★）|表面淬火", minWear: 0, maxWear: 1, sources: ["“突围大行动”武器箱"], grade: 1 },
+    { id: 239, name: "蝴蝶刀（★）|北方森林", minWear: 0, maxWear: 1, sources: ["“突围大行动”武器箱"], grade: 1 },
+    { id: 240, name: "蝴蝶刀（★）|致命紫罗兰", minWear: 0.06, maxWear: 0.8, sources: ["光谱武器箱", "光谱 2 号武器箱"], grade: 1 },
+    { id: 241, name: "蝴蝶刀（★）|枯焦之色", minWear: 0.06, maxWear: 0.8, sources: ["“突围大行动”武器箱"], grade: 1 },
+    { id: 242, name: "蝴蝶刀（★）|外表生锈", minWear: 0.4, maxWear: 1, sources: ["光谱武器箱", "光谱 2 号武器箱"], grade: 1 },
+    { id: 243, name: "M9 刺刀（★）|深红之网", minWear: 0, maxWear: 1, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 244, name: "M9 刺刀（★）|都市伪装", minWear: 0.06, maxWear: 0.8, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 245, name: "M9 刺刀（★）|渐变之色", minWear: 0, maxWear: 0.08, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 246, name: "M9 刺刀（★）|屠夫", minWear: 0.01, maxWear: 0.26, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 247, name: "M9 刺刀（★）|蓝钢", minWear: 0, maxWear: 1, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 248, name: "M9 刺刀（★）|噩梦之夜", minWear: 0.06, maxWear: 0.8, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 249, name: "M9 刺刀（★）|人工染色", minWear: 0, maxWear: 1, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 250, name: "M9 刺刀（★）|森林DDPAT", minWear: 0.06, maxWear: 0.8, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 251, name: "M9 刺刀（★）|表面淬火", minWear: 0, maxWear: 1, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 252, name: "M9 刺刀（★）|北方森林", minWear: 0, maxWear: 1, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 253, name: "M9 刺刀（★）|枯焦之色", minWear: 0.06, maxWear: 0.8, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 254, name: "爪子刀（★）|深红之网", minWear: 0, maxWear: 1, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 255, name: "爪子刀（★）|都市伪装", minWear: 0.06, maxWear: 0.8, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 256, name: "爪子刀（★）|渐变之色", minWear: 0, maxWear: 0.08, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 257, name: "爪子刀（★）|屠夫", minWear: 0.01, maxWear: 0.26, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 258, name: "爪子刀（★）|蓝钢", minWear: 0, maxWear: 1, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 259, name: "爪子刀（★）|噩梦之夜", minWear: 0.06, maxWear: 0.8, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 260, name: "爪子刀（★）|人工染色", minWear: 0, maxWear: 1, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 261, name: "爪子刀（★）|森林DDPAT", minWear: 0.06, maxWear: 0.8, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 262, name: "爪子刀（★）|表面淬火", minWear: 0, maxWear: 1, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 263, name: "爪子刀（★）|北方森林", minWear: 0, maxWear: 1, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 264, name: "爪子刀（★）|枯焦之色", minWear: 0.06, maxWear: 0.8, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 265, name: "骷髅匕首（★）|深红之网", minWear: 0, maxWear: 1, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 266, name: "骷髅匕首（★）|都市伪装", minWear: 0.06, maxWear: 0.8, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 267, name: "骷髅匕首（★）|渐变之色", minWear: 0, maxWear: 0.08, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 268, name: "骷髅匕首（★）|屠夫", minWear: 0.01, maxWear: 0.26, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 269, name: "骷髅匕首（★）|蓝钢", minWear: 0, maxWear: 1, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 270, name: "骷髅匕首（★）|人工染色", minWear: 0, maxWear: 1, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 271, name: "骷髅匕首（★）|森林DDPAT", minWear: 0.06, maxWear: 0.8, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 272, name: "骷髅匕首（★）|表面淬火", minWear: 0, maxWear: 1, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 273, name: "骷髅匕首（★）|北方森林", minWear: 0, maxWear: 1, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 274, name: "骷髅匕首（★）|枯焦之色", minWear: 0.06, maxWear: 0.8, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 275, name: "刺刀（★）|深红之网", minWear: 0, maxWear: 1, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 276, name: "刺刀（★）|都市伪装", minWear: 0.06, maxWear: 0.8, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 277, name: "刺刀（★）|渐变之色", minWear: 0, maxWear: 0.08, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 278, name: "刺刀（★）|屠夫", minWear: 0.01, maxWear: 0.26, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 279, name: "刺刀（★）|蓝钢", minWear: 0, maxWear: 1, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 280, name: "刺刀（★）|噩梦之夜", minWear: 0.06, maxWear: 0.8, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 281, name: "刺刀（★）|人工染色", minWear: 0, maxWear: 1, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 282, name: "刺刀（★）|森林DDPAT", minWear: 0.06, maxWear: 0.8, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 283, name: "刺刀（★）|表面淬火", minWear: 0, maxWear: 1, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 284, name: "刺刀（★）|北方森林", minWear: 0, maxWear: 1, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 285, name: "刺刀（★）|枯焦之色", minWear: 0.06, maxWear: 0.8, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 286, name: "锯齿爪刀（★）|虎牙", minWear: 0, maxWear: 0.08, sources: ["棱彩武器箱", "棱彩2号武器箱"], grade: 1 },
+    { id: 287, name: "锯齿爪刀（★）|大马士革钢", minWear: 0, maxWear: 0.5, sources: ["棱彩武器箱", "棱彩2号武器箱"], grade: 1 },
+    { id: 288, name: "锯齿爪刀（★）|多普勒", minWear: 0, maxWear: 0.08, sources: ["棱彩武器箱", "棱彩2号武器箱"], grade: 1 },
+    { id: 289, name: "锯齿爪刀（★）|渐变大理石", minWear: 0, maxWear: 0.08, sources: ["棱彩武器箱", "棱彩2号武器箱"], grade: 1 },
+    { id: 290, name: "锯齿爪刀（★）|深红之网", minWear: 0, maxWear: 1, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 291, name: "锯齿爪刀（★）|都市伪装", minWear: 0.06, maxWear: 0.8, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 292, name: "锯齿爪刀（★）|渐变之色", minWear: 0, maxWear: 0.08, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 293, name: "锯齿爪刀（★）|屠夫", minWear: 0.01, maxWear: 0.26, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 294, name: "锯齿爪刀（★）|蓝钢", minWear: 0, maxWear: 1, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 295, name: "锯齿爪刀（★）|人工染色", minWear: 0, maxWear: 1, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 296, name: "锯齿爪刀（★）|森林DDPAT", minWear: 0.06, maxWear: 0.8, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 297, name: "锯齿爪刀（★）|表面淬火", minWear: 0, maxWear: 1, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 298, name: "锯齿爪刀（★）|北方森林", minWear: 0, maxWear: 1, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 299, name: "锯齿爪刀（★）|致命紫罗兰", minWear: 0.06, maxWear: 0.8, sources: ["棱彩武器箱", "棱彩2号武器箱"], grade: 1 },
+    { id: 300, name: "锯齿爪刀（★）|枯焦之色", minWear: 0.06, maxWear: 0.8, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 301, name: "锯齿爪刀（★）|外表生锈", minWear: 0.4, maxWear: 1, sources: ["棱彩武器箱", "棱彩2号武器箱"], grade: 1 },
+    { id: 302, name: "流浪者匕首（★）|深红之网", minWear: 0, maxWear: 1, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 303, name: "流浪者匕首（★）|都市伪装", minWear: 0.06, maxWear: 0.8, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 304, name: "流浪者匕首（★）|渐变之色", minWear: 0, maxWear: 0.08, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 305, name: "流浪者匕首（★）|屠夫", minWear: 0.01, maxWear: 0.26, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 306, name: "流浪者匕首（★）|蓝钢", minWear: 0, maxWear: 1, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 307, name: "流浪者匕首（★）|人工染色", minWear: 0, maxWear: 1, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 308, name: "流浪者匕首（★）|森林DDPAT", minWear: 0.06, maxWear: 0.8, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 309, name: "流浪者匕首（★）|表面淬火", minWear: 0, maxWear: 1, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 310, name: "流浪者匕首（★）|北方森林", minWear: 0, maxWear: 1, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 311, name: "流浪者匕首（★）|枯焦之色", minWear: 0.06, maxWear: 0.8, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 312, name: "折叠刀（★）|深红之网", minWear: 0, maxWear: 1, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 313, name: "折叠刀（★）|都市伪装", minWear: 0.06, maxWear: 0.8, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 314, name: "折叠刀（★）|渐变之色", minWear: 0, maxWear: 0.08, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 315, name: "折叠刀（★）|屠夫", minWear: 0.01, maxWear: 0.26, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 316, name: "折叠刀（★）|蓝钢", minWear: 0, maxWear: 1, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 317, name: "折叠刀（★）|噩梦之夜", minWear: 0.06, maxWear: 0.8, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 318, name: "折叠刀（★）|人工染色", minWear: 0, maxWear: 1, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 319, name: "折叠刀（★）|表面淬火", minWear: 0, maxWear: 1, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 320, name: "折叠刀（★）|北方森林", minWear: 0, maxWear: 1, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 321, name: "折叠刀（★）|枯焦之色", minWear: 0.06, maxWear: 0.8, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 322, name: "短剑（★）|虎牙", minWear: 0, maxWear: 0.08, sources: ["棱彩武器箱", "棱彩2号武器箱"], grade: 1 },
+    { id: 323, name: "短剑（★）|大马士革钢", minWear: 0, maxWear: 0.5, sources: ["棱彩武器箱", "棱彩2号武器箱"], grade: 1 },
+    { id: 324, name: "短剑（★）|多普勒", minWear: 0, maxWear: 0.08, sources: ["棱彩武器箱", "棱彩2号武器箱"], grade: 1 },
+    { id: 325, name: "短剑（★）|渐变大理石", minWear: 0, maxWear: 0.08, sources: ["棱彩武器箱", "棱彩2号武器箱"], grade: 1 },
+    { id: 326, name: "短剑（★）|深红之网", minWear: 0, maxWear: 1, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 327, name: "短剑（★）|都市伪装", minWear: 0.06, maxWear: 0.8, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 328, name: "短剑（★）|渐变之色", minWear: 0, maxWear: 0.08, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 329, name: "短剑（★）|屠夫", minWear: 0.01, maxWear: 0.26, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 330, name: "短剑（★）|蓝钢", minWear: 0, maxWear: 1, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 331, name: "短剑（★）|人工染色", minWear: 0, maxWear: 1, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 332, name: "短剑（★）|森林DDPAT", minWear: 0.06, maxWear: 0.8, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 333, name: "短剑（★）|表面淬火", minWear: 0, maxWear: 1, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 334, name: "短剑（★）|北方森林", minWear: 0, maxWear: 1, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 335, name: "短剑（★）|致命紫罗兰", minWear: 0.06, maxWear: 0.8, sources: ["棱彩武器箱", "棱彩2号武器箱"], grade: 1 },
+    { id: 336, name: "短剑（★）|枯焦之色", minWear: 0.06, maxWear: 0.8, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 337, name: "短剑（★）|外表生锈", minWear: 0.4, maxWear: 1, sources: ["棱彩武器箱", "棱彩2号武器箱"], grade: 1 },
+    { id: 338, name: "海豹短刀（★）|深红之网", minWear: 0, maxWear: 1, sources: ["反恐精英20周年武器箱"], grade: 1 },
+    { id: 339, name: "海豹短刀（★）|都市伪装", minWear: 0.06, maxWear: 0.8, sources: ["反恐精英20周年武器箱"], grade: 1 },
+    { id: 340, name: "海豹短刀（★）|渐变之色", minWear: 0, maxWear: 0.08, sources: ["反恐精英20周年武器箱"], grade: 1 },
+    { id: 341, name: "海豹短刀（★）|屠夫", minWear: 0.01, maxWear: 0.26, sources: ["反恐精英20周年武器箱"], grade: 1 },
+    { id: 342, name: "海豹短刀（★）|蓝钢", minWear: 0, maxWear: 1, sources: ["反恐精英20周年武器箱"], grade: 1 },
+    { id: 343, name: "海豹短刀（★）|人工染色", minWear: 0, maxWear: 1, sources: ["反恐精英20周年武器箱"], grade: 1 },
+    { id: 344, name: "海豹短刀（★）|森林DDPAT", minWear: 0.06, maxWear: 0.8, sources: ["反恐精英20周年武器箱"], grade: 1 },
+    { id: 345, name: "海豹短刀（★）|表面淬火", minWear: 0, maxWear: 1, sources: ["反恐精英20周年武器箱"], grade: 1 },
+    { id: 346, name: "海豹短刀（★）|北方森林", minWear: 0, maxWear: 1, sources: ["反恐精英20周年武器箱"], grade: 1 },
+    { id: 347, name: "海豹短刀（★）|枯焦之色", minWear: 0.06, maxWear: 0.8, sources: ["反恐精英20周年武器箱"], grade: 1 },
+    { id: 348, name: "熊刀（★）|虎牙", minWear: 0, maxWear: 0.08, sources: ["棱彩武器箱", "棱彩2号武器箱"], grade: 1 },
+    { id: 349, name: "熊刀（★）|大马士革钢", minWear: 0, maxWear: 0.5, sources: ["棱彩武器箱", "棱彩2号武器箱"], grade: 1 },
+    { id: 350, name: "熊刀（★）|多普勒", minWear: 0, maxWear: 0.08, sources: ["棱彩武器箱", "棱彩2号武器箱"], grade: 1 },
+    { id: 351, name: "熊刀（★）|渐变大理石", minWear: 0, maxWear: 0.08, sources: ["棱彩武器箱", "棱彩2号武器箱"], grade: 1 },
+    { id: 352, name: "熊刀（★）|深红之网", minWear: 0, maxWear: 1, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 353, name: "熊刀（★）|都市伪装", minWear: 0.06, maxWear: 0.8, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 354, name: "熊刀（★）|渐变之色", minWear: 0, maxWear: 0.08, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 355, name: "熊刀（★）|屠夫", minWear: 0.01, maxWear: 0.26, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 356, name: "熊刀（★）|蓝钢", minWear: 0, maxWear: 1, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 357, name: "熊刀（★）|人工染色", minWear: 0, maxWear: 1, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 358, name: "熊刀（★）|森林DDPAT", minWear: 0.06, maxWear: 0.8, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 359, name: "熊刀（★）|表面淬火", minWear: 0, maxWear: 1, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 360, name: "熊刀（★）|北方森林", minWear: 0, maxWear: 1, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 361, name: "熊刀（★）|致命紫罗兰", minWear: 0.06, maxWear: 0.8, sources: ["棱彩武器箱", "棱彩2号武器箱"], grade: 1 },
+    { id: 362, name: "熊刀（★）|枯焦之色", minWear: 0.06, maxWear: 0.8, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 363, name: "熊刀（★）|外表生锈", minWear: 0.4, maxWear: 1, sources: ["棱彩武器箱", "棱彩2号武器箱"], grade: 1 },
+    { id: 364, name: "猎杀者匕首（★）|虎牙", minWear: 0, maxWear: 0.08, sources: ["光谱武器箱", "光谱 2 号武器箱"], grade: 1 },
+    { id: 365, name: "猎杀者匕首（★）|大马士革钢", minWear: 0, maxWear: 0.5, sources: ["光谱武器箱", "光谱 2 号武器箱"], grade: 1 },
+    { id: 366, name: "猎杀者匕首（★）|多普勒", minWear: 0, maxWear: 0.08, sources: ["光谱武器箱", "光谱 2 号武器箱"], grade: 1 },
+    { id: 367, name: "猎杀者匕首（★）|渐变大理石", minWear: 0, maxWear: 0.08, sources: ["光谱武器箱", "光谱 2 号武器箱"], grade: 1 },
+    { id: 368, name: "猎杀者匕首（★）|深红之网", minWear: 0, maxWear: 1, sources: ["猎杀者武器箱"], grade: 1 },
+    { id: 369, name: "猎杀者匕首（★）|都市伪装", minWear: 0.06, maxWear: 0.8, sources: ["猎杀者武器箱"], grade: 1 },
+    { id: 370, name: "猎杀者匕首（★）|渐变之色", minWear: 0, maxWear: 0.08, sources: ["猎杀者武器箱"], grade: 1 },
+    { id: 371, name: "猎杀者匕首（★）|屠夫", minWear: 0.01, maxWear: 0.26, sources: ["猎杀者武器箱"], grade: 1 },
+    { id: 372, name: "猎杀者匕首（★）|蓝钢", minWear: 0, maxWear: 1, sources: ["猎杀者武器箱"], grade: 1 },
+    { id: 373, name: "猎杀者匕首（★）|噩梦之夜", minWear: 0.06, maxWear: 0.8, sources: ["猎杀者武器箱"], grade: 1 },
+    { id: 374, name: "猎杀者匕首（★）|人工染色", minWear: 0, maxWear: 1, sources: ["猎杀者武器箱"], grade: 1 },
+    { id: 375, name: "猎杀者匕首（★）|表面淬火", minWear: 0, maxWear: 1, sources: ["猎杀者武器箱"], grade: 1 },
+    { id: 376, name: "猎杀者匕首（★）|北方森林", minWear: 0, maxWear: 1, sources: ["猎杀者武器箱"], grade: 1 },
+    { id: 377, name: "猎杀者匕首（★）|致命紫罗兰", minWear: 0.06, maxWear: 0.8, sources: ["光谱武器箱", "光谱 2 号武器箱"], grade: 1 },
+    { id: 378, name: "猎杀者匕首（★）|枯焦之色", minWear: 0.06, maxWear: 0.8, sources: ["猎杀者武器箱"], grade: 1 },
+    { id: 379, name: "猎杀者匕首（★）|外表生锈", minWear: 0.4, maxWear: 1, sources: ["光谱武器箱", "光谱 2 号武器箱"], grade: 1 },
+    { id: 380, name: "系绳匕首（★）|深红之网", minWear: 0, maxWear: 1, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 381, name: "系绳匕首（★）|都市伪装", minWear: 0.06, maxWear: 0.8, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 382, name: "系绳匕首（★）|渐变之色", minWear: 0, maxWear: 0.08, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 383, name: "系绳匕首（★）|屠夫", minWear: 0.01, maxWear: 0.26, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 384, name: "系绳匕首（★）|蓝钢", minWear: 0, maxWear: 1, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 385, name: "系绳匕首（★）|人工染色", minWear: 0, maxWear: 1, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 386, name: "系绳匕首（★）|森林DDPAT", minWear: 0.06, maxWear: 0.8, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 387, name: "系绳匕首（★）|表面淬火", minWear: 0, maxWear: 1, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 388, name: "系绳匕首（★）|北方森林", minWear: 0, maxWear: 1, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 389, name: "系绳匕首（★）|枯焦之色", minWear: 0.06, maxWear: 0.8, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 390, name: "求生匕首（★）|深红之网", minWear: 0, maxWear: 1, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 391, name: "求生匕首（★）|都市伪装", minWear: 0.06, maxWear: 0.8, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 392, name: "求生匕首（★）|渐变之色", minWear: 0, maxWear: 0.08, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 393, name: "求生匕首（★）|屠夫", minWear: 0.01, maxWear: 0.26, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 394, name: "求生匕首（★）|蓝钢", minWear: 0, maxWear: 1, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 395, name: "求生匕首（★）|人工染色", minWear: 0, maxWear: 1, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 396, name: "求生匕首（★）|森林DDPAT", minWear: 0.06, maxWear: 0.8, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 397, name: "求生匕首（★）|表面淬火", minWear: 0, maxWear: 1, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 398, name: "求生匕首（★）|北方森林", minWear: 0, maxWear: 1, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 399, name: "求生匕首（★）|枯焦之色", minWear: 0.06, maxWear: 0.8, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 400, name: "弯刀（★）|虎牙", minWear: 0, maxWear: 0.08, sources: ["光谱武器箱", "光谱 2 号武器箱"], grade: 1 },
+    { id: 401, name: "弯刀（★）|大马士革钢", minWear: 0, maxWear: 0.5, sources: ["光谱武器箱", "光谱 2 号武器箱"], grade: 1 },
+    { id: 402, name: "弯刀（★）|多普勒", minWear: 0, maxWear: 0.08, sources: ["光谱武器箱", "光谱 2 号武器箱"], grade: 1 },
+    { id: 403, name: "弯刀（★）|渐变大理石", minWear: 0, maxWear: 0.08, sources: ["光谱武器箱", "光谱 2 号武器箱"], grade: 1 },
+    { id: 404, name: "弯刀（★）|深红之网", minWear: 0, maxWear: 1, sources: ["弯曲猎手武器箱"], grade: 1 },
+    { id: 405, name: "弯刀（★）|都市伪装", minWear: 0.06, maxWear: 0.8, sources: ["弯曲猎手武器箱"], grade: 1 },
+    { id: 406, name: "弯刀（★）|渐变之色", minWear: 0, maxWear: 0.08, sources: ["弯曲猎手武器箱"], grade: 1 },
+    { id: 407, name: "弯刀（★）|屠夫", minWear: 0.01, maxWear: 0.26, sources: ["弯曲猎手武器箱"], grade: 1 },
+    { id: 408, name: "弯刀（★）|蓝钢", minWear: 0, maxWear: 1, sources: ["弯曲猎手武器箱"], grade: 1 },
+    { id: 409, name: "弯刀（★）|噩梦之夜", minWear: 0.06, maxWear: 0.8, sources: ["弯曲猎手武器箱"], grade: 1 },
+    { id: 410, name: "弯刀（★）|人工染色", minWear: 0, maxWear: 1, sources: ["弯曲猎手武器箱"], grade: 1 },
+    { id: 411, name: "弯刀（★）|森林DDPAT", minWear: 0.06, maxWear: 0.8, sources: ["弯曲猎手武器箱"], grade: 1 },
+    { id: 412, name: "弯刀（★）|表面淬火", minWear: 0, maxWear: 1, sources: ["弯曲猎手武器箱"], grade: 1 },
+    { id: 413, name: "弯刀（★）|北方森林", minWear: 0, maxWear: 1, sources: ["弯曲猎手武器箱"], grade: 1 },
+    { id: 414, name: "弯刀（★）|致命紫罗兰", minWear: 0.06, maxWear: 0.8, sources: ["光谱武器箱", "光谱 2 号武器箱"], grade: 1 },
+    { id: 415, name: "弯刀（★）|枯焦之色", minWear: 0.06, maxWear: 0.8, sources: ["弯曲猎手武器箱"], grade: 1 },
+    { id: 416, name: "弯刀（★）|外表生锈", minWear: 0.4, maxWear: 1, sources: ["光谱武器箱", "光谱 2 号武器箱"], grade: 1 },
+    { id: 417, name: "暗影双匕（★）|虎牙", minWear: 0, maxWear: 0.08, sources: ["光谱武器箱", "光谱 2 号武器箱"], grade: 1 },
+    { id: 418, name: "暗影双匕（★）|大马士革钢", minWear: 0, maxWear: 0.5, sources: ["光谱武器箱", "光谱 2 号武器箱"], grade: 1 },
+    { id: 419, name: "暗影双匕（★）|多普勒", minWear: 0, maxWear: 0.08, sources: ["光谱武器箱", "光谱 2 号武器箱"], grade: 1 },
+    { id: 420, name: "暗影双匕（★）|渐变大理石", minWear: 0, maxWear: 0.08, sources: ["光谱武器箱", "光谱 2 号武器箱"], grade: 1 },
+    { id: 421, name: "暗影双匕（★）|深红之网", minWear: 0, maxWear: 1, sources: ["暗影武器箱"], grade: 1 },
+    { id: 422, name: "暗影双匕（★）|都市伪装", minWear: 0.06, maxWear: 0.8, sources: ["暗影武器箱"], grade: 1 },
+    { id: 423, name: "暗影双匕（★）|渐变之色", minWear: 0, maxWear: 0.08, sources: ["暗影武器箱"], grade: 1 },
+    { id: 424, name: "暗影双匕（★）|屠夫", minWear: 0.01, maxWear: 0.26, sources: ["暗影武器箱"], grade: 1 },
+    { id: 425, name: "暗影双匕（★）|蓝钢", minWear: 0, maxWear: 1, sources: ["暗影武器箱"], grade: 1 },
+    { id: 426, name: "暗影双匕（★）|噩梦之夜", minWear: 0.06, maxWear: 0.8, sources: ["暗影武器箱"], grade: 1 },
+    { id: 427, name: "暗影双匕（★）|人工染色", minWear: 0, maxWear: 1, sources: ["暗影武器箱"], grade: 1 },
+    { id: 428, name: "暗影双匕（★）|表面淬火", minWear: 0, maxWear: 1, sources: ["暗影武器箱"], grade: 1 },
+    { id: 429, name: "暗影双匕（★）|北方森林", minWear: 0, maxWear: 1, sources: ["暗影武器箱"], grade: 1 },
+    { id: 430, name: "暗影双匕（★）|致命紫罗兰", minWear: 0.06, maxWear: 0.8, sources: ["光谱武器箱", "光谱 2 号武器箱"], grade: 1 },
+    { id: 431, name: "暗影双匕（★）|枯焦之色", minWear: 0.06, maxWear: 0.8, sources: ["暗影武器箱"], grade: 1 },
+    { id: 432, name: "暗影双匕（★）|外表生锈", minWear: 0.4, maxWear: 1, sources: ["光谱武器箱", "光谱 2 号武器箱"], grade: 1 },
+    { id: 433, name: "鲍伊猎刀（★）|虎牙", minWear: 0, maxWear: 0.08, sources: ["光谱武器箱", "光谱 2 号武器箱"], grade: 1 },
+    { id: 434, name: "鲍伊猎刀（★）|大马士革钢", minWear: 0, maxWear: 0.5, sources: ["光谱武器箱", "光谱 2 号武器箱"], grade: 1 },
+    { id: 435, name: "鲍伊猎刀（★）|多普勒", minWear: 0, maxWear: 0.08, sources: ["光谱武器箱", "光谱 2 号武器箱"], grade: 1 },
+    { id: 436, name: "鲍伊猎刀（★）|渐变大理石", minWear: 0, maxWear: 0.08, sources: ["光谱武器箱", "光谱 2 号武器箱"], grade: 1 },
+    { id: 437, name: "鲍伊猎刀（★）|深红之网", minWear: 0, maxWear: 1, sources: ["“野火大行动”武器箱"], grade: 1 },
+    { id: 438, name: "鲍伊猎刀（★）|都市伪装", minWear: 0.06, maxWear: 0.8, sources: ["“野火大行动”武器箱"], grade: 1 },
+    { id: 439, name: "鲍伊猎刀（★）|渐变之色", minWear: 0, maxWear: 0.08, sources: ["“野火大行动”武器箱"], grade: 1 },
+    { id: 440, name: "鲍伊猎刀（★）|屠夫", minWear: 0.01, maxWear: 0.26, sources: ["“野火大行动”武器箱"], grade: 1 },
+    { id: 441, name: "鲍伊猎刀（★）|蓝钢", minWear: 0, maxWear: 1, sources: ["“野火大行动”武器箱"], grade: 1 },
+    { id: 442, name: "鲍伊猎刀（★）|噩梦之夜", minWear: 0.06, maxWear: 0.8, sources: ["“野火大行动”武器箱"], grade: 1 },
+    { id: 443, name: "鲍伊猎刀（★）|人工染色", minWear: 0, maxWear: 1, sources: ["“野火大行动”武器箱"], grade: 1 },
+    { id: 444, name: "鲍伊猎刀（★）|表面淬火", minWear: 0, maxWear: 1, sources: ["“野火大行动”武器箱"], grade: 1 },
+    { id: 445, name: "鲍伊猎刀（★）|北方森林", minWear: 0, maxWear: 1, sources: ["“野火大行动”武器箱"], grade: 1 },
+    { id: 446, name: "鲍伊猎刀（★）|致命紫罗兰", minWear: 0.06, maxWear: 0.8, sources: ["光谱武器箱", "光谱 2 号武器箱"], grade: 1 },
+    { id: 447, name: "鲍伊猎刀（★）|枯焦之色", minWear: 0.06, maxWear: 0.8, sources: ["“野火大行动”武器箱"], grade: 1 },
+    { id: 448, name: "鲍伊猎刀（★）|外表生锈", minWear: 0.4, maxWear: 1, sources: ["光谱武器箱", "光谱 2 号武器箱"], grade: 1 },
+    { id: 449, name: "穿肠刀（★）|深红之网", minWear: 0, maxWear: 1, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 450, name: "穿肠刀（★）|都市伪装", minWear: 0.06, maxWear: 0.8, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 451, name: "穿肠刀（★）|渐变之色", minWear: 0, maxWear: 0.08, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 452, name: "穿肠刀（★）|屠夫", minWear: 0.01, maxWear: 0.26, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 453, name: "穿肠刀（★）|蓝钢", minWear: 0, maxWear: 1, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 454, name: "穿肠刀（★）|噩梦之夜", minWear: 0.06, maxWear: 0.8, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 455, name: "穿肠刀（★）|人工染色", minWear: 0, maxWear: 1, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 456, name: "穿肠刀（★）|表面淬火", minWear: 0, maxWear: 1, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 457, name: "穿肠刀（★）|北方森林", minWear: 0, maxWear: 1, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 458, name: "穿肠刀（★）|枯焦之色", minWear: 0.06, maxWear: 0.8, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 459, name: "折刀（★）|虎牙", minWear: 0, maxWear: 0.08, sources: ["棱彩武器箱", "棱彩2号武器箱"], grade: 1 },
+    { id: 460, name: "折刀（★）|大马士革钢", minWear: 0, maxWear: 0.5, sources: ["棱彩武器箱", "棱彩2号武器箱"], grade: 1 },
+    { id: 461, name: "折刀（★）|多普勒", minWear: 0, maxWear: 0.08, sources: ["棱彩武器箱", "棱彩2号武器箱"], grade: 1 },
+    { id: 462, name: "折刀（★）|渐变大理石", minWear: 0, maxWear: 0.08, sources: ["棱彩武器箱", "棱彩2号武器箱"], grade: 1 },
+    { id: 463, name: "折刀（★）|传说", minWear: 0, maxWear: 0.65, sources: [""], grade: 1 },
+    { id: 464, name: "折刀（★）|深红之网", minWear: 0, maxWear: 1, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 465, name: "折刀（★）|都市伪装", minWear: 0.06, maxWear: 0.8, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 466, name: "折刀（★）|渐变之色", minWear: 0, maxWear: 0.08, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 467, name: "折刀（★）|屠夫", minWear: 0.01, maxWear: 0.26, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 468, name: "折刀（★）|自由之手", minWear: 0, maxWear: 0.48, sources: [""], grade: 1 },
+    { id: 469, name: "折刀（★）|蓝钢", minWear: 0, maxWear: 1, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 470, name: "折刀（★）|人工染色", minWear: 0, maxWear: 1, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 471, name: "折刀（★）|森林DDPAT", minWear: 0.06, maxWear: 0.8, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 472, name: "折刀（★）|表面淬火", minWear: 0, maxWear: 1, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 473, name: "折刀（★）|北方森林", minWear: 0, maxWear: 1, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 474, name: "折刀（★）|狩猎网格", minWear: 0.06, maxWear: 0.8, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 475, name: "折刀（★）|致命紫罗兰", minWear: 0.06, maxWear: 0.8, sources: ["棱彩武器箱", "棱彩2号武器箱"], grade: 1 },
+    { id: 476, name: "折刀（★）|枯焦之色", minWear: 0.06, maxWear: 0.8, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 477, name: "折刀（★）|外表生锈", minWear: 0.4, maxWear: 1, sources: ["棱彩武器箱", "棱彩2号武器箱"], grade: 1 },
+    { id: 478, name: "蝴蝶刀（★）|", minWear: 0, maxWear: 1, sources: ["“突围大行动”武器箱"], grade: 1 },
+    { id: 479, name: "M9 刺刀（★）", minWear: 0, maxWear: 1, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 480, name: "爪子刀（★）", minWear: 0, maxWear: 1, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 481, name: "刺刀（★）", minWear: 0, maxWear: 1, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 482, name: "锯齿爪刀（★）", minWear: 0, maxWear: 1, sources: ["棱彩武器箱", "棱彩2号武器箱"], grade: 1 },
+    { id: 483, name: "折叠刀（★）", minWear: 0, maxWear: 1, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 484, name: "短剑（★）", minWear: 0, maxWear: 1, sources: ["棱彩武器箱", "棱彩2号武器箱"], grade: 1 },
+    { id: 485, name: "海豹短刀（★）", minWear: 0, maxWear: 1, sources: ["反恐精英20周年武器箱"], grade: 1 },
+    { id: 486, name: "熊刀（★）", minWear: 0, maxWear: 1, sources: ["棱彩武器箱", "棱彩2号武器箱"], grade: 1 },
+    { id: 487, name: "猎杀者匕首（★）", minWear: 0, maxWear: 1, sources: ["猎杀者武器箱"], grade: 1 },
+    { id: 488, name: "弯刀（★）", minWear: 0, maxWear: 1, sources: ["弯曲猎手武器箱"], grade: 1 },
+    { id: 489, name: "暗影双匕（★）", minWear: 0, maxWear: 1, sources: ["暗影武器箱"], grade: 1 },
+    { id: 490, name: "鲍伊猎刀（★）", minWear: 0, maxWear: 1, sources: ["“野火大行动”武器箱"], grade: 1 },
+    { id: 491, name: "穿肠刀（★）", minWear: 0, maxWear: 1, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 492, name: "折刀（★）", minWear: 0, maxWear: 1, sources: ["棱彩武器箱", "棱彩2号武器箱"], grade: 1 },
+    { id: 493, name: "蝴蝶刀（★）|狩猎网格", minWear: 0.06, maxWear: 0.8, sources: ["“突围大行动”武器箱"], grade: 1 },
+    { id: 494, name: "M9 刺刀（★）|狩猎网格", minWear: 0.06, maxWear: 0.8, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 495, name: "爪子刀（★）|狩猎网格", minWear: 0.06, maxWear: 0.8, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 496, name: "骷髅匕首（★）|狩猎网格", minWear: 0.06, maxWear: 0.8, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 497, name: "刺刀（★）|狩猎网格", minWear: 0.06, maxWear: 0.8, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 498, name: "锯齿爪刀（★）|狩猎网格", minWear: 0.06, maxWear: 0.8, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 499, name: "流浪者匕首（★）|狩猎网格", minWear: 0.06, maxWear: 0.8, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 500, name: "折叠刀（★）|狩猎网格", minWear: 0.06, maxWear: 0.8, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 501, name: "短剑（★）|狩猎网格", minWear: 0.06, maxWear: 0.8, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 502, name: "海豹短刀（★）|狩猎网格", minWear: 0.06, maxWear: 0.8, sources: ["反恐精英20周年武器箱"], grade: 1 },
+    { id: 503, name: "熊刀（★）|狩猎网格", minWear: 0.06, maxWear: 0.8, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 504, name: "猎杀者匕首（★）|狩猎网格", minWear: 0.06, maxWear: 0.8, sources: ["猎杀者武器箱"], grade: 1 },
+    { id: 505, name: "系绳匕首（★）|狩猎网格", minWear: 0.06, maxWear: 0.8, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 506, name: "求生匕首（★）|狩猎网格", minWear: 0.06, maxWear: 0.8, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 507, name: "弯刀（★）|狩猎网格", minWear: 0.06, maxWear: 0.8, sources: ["弯曲猎手武器箱"], grade: 1 },
+    { id: 508, name: "暗影双匕（★）|狩猎网格", minWear: 0.06, maxWear: 0.8, sources: ["暗影武器箱"], grade: 1 },
+    { id: 509, name: "鲍伊猎刀（★）|狩猎网格", minWear: 0.06, maxWear: 0.8, sources: ["“野火大行动”武器箱"], grade: 1 },
+    { id: 510, name: "穿肠刀（★）|狩猎网格", minWear: 0.06, maxWear: 0.8, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 511, name: "M4A1 消音型 | 次时代", minWear: 0, maxWear: 0.5, sources: ["“突围大行动”武器箱"], grade: 2 },
+    { id: 512, name: "P90 | 二西莫夫", minWear: 0, maxWear: 0.92, sources: ["“突围大行动”武器箱"], grade: 2 },
+    { id: 513, name: "折叠刀（★）|森林DDPAT", minWear: 0.06, maxWear: 0.8, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 514, name: "穿肠刀（★）|森林DDPAT", minWear: 0.06, maxWear: 0.8, sources: ["左轮武器箱", "“先锋大行动”武器箱", "“凤凰大行动”武器箱"], grade: 1 },
+    { id: 515, name: "M4A4 | 皇家圣骑士", minWear: 0, maxWear: 0.8, sources: ["左轮武器箱"], grade: 2 },
+    { id: 516, name: "R8 左轮手枪 | 渐变之色", minWear: 0, maxWear: 0.4, sources: ["左轮武器箱"], grade: 2 },
+    { id: 517, name: "AK-47 | 荒野反叛", minWear: 0.05, maxWear: 0.7, sources: ["“先锋大行动”武器箱"], grade: 2 },
+    { id: 518, name: "P2000 | 火灵", minWear: 0, maxWear: 0.6, sources: ["“先锋大行动”武器箱"], grade: 2 },
+    { id: 519, name: "AUG | 变色龙", minWear: 0, maxWear: 0.5, sources: ["“凤凰大行动”武器箱"], grade: 2 },
+    { id: 520, name: "AK-47 | 阿努比斯军团", minWear: 0, maxWear: 0.7, sources: ["裂空武器箱"], grade: 2 },
+    { id: 521, name: "沙漠之鹰 | 印花集", minWear: 0, maxWear: 0.8, sources: ["裂空武器箱"], grade: 2 },
+    { id: 522, name: "AWP | 冲出重围", minWear: 0, maxWear: 1, sources: ["“裂网大行动”武器箱"], grade: 2 },
+    { id: 523, name: "MAC-10 | 潜行者", minWear: 0, maxWear: 1, sources: ["“裂网大行动”武器箱"], grade: 2 },
+    { id: 524, name: "FN57 | 怒氓", minWear: 0, maxWear: 0.7, sources: ["棱彩武器箱"], grade: 2 },
+    { id: 525, name: "M4A4 | 皇帝", minWear: 0, maxWear: 0.8, sources: ["棱彩武器箱"], grade: 2 },
+    { id: 526, name: "M4A1 消音型 | 二号玩家", minWear: 0, maxWear: 0.84, sources: ["棱彩2号武器箱"], grade: 2 },
+    { id: 527, name: "格洛克 18 型 | 子弹皇后", minWear: 0, maxWear: 1, sources: ["棱彩2号武器箱"], grade: 2 },
+    { id: 528, name: "AK-47 | 二西莫夫", minWear: 0.05, maxWear: 0.7, sources: ["“头号特训”武器箱"], grade: 2 },
+    { id: 529, name: "AWP | 黑色魅影", minWear: 0, maxWear: 0.5, sources: ["“头号特训”武器箱"], grade: 2 },
+    { id: 530, name: "AK-47 | 霓虹骑士", minWear: 0, maxWear: 0.8, sources: ["地平线武器箱"], grade: 2 },
+    { id: 531, name: "沙漠之鹰 | 红色代号", minWear: 0, maxWear: 1, sources: ["地平线武器箱"], grade: 2 },
+    { id: 532, name: "AWP | 野火", minWear: 0, maxWear: 0.7, sources: ["反恐精英20周年武器箱"], grade: 2 },
+    { id: 533, name: "法玛斯 | 纪念碑", minWear: 0, maxWear: 0.5, sources: ["反恐精英20周年武器箱"], grade: 2 },
+    { id: 534, name: "AK-47 | 火神", minWear: 0, maxWear: 0.9, sources: ["猎杀者武器箱"], grade: 2 },
+    { id: 535, name: "M4A4 | 沙漠精英", minWear: 0, maxWear: 0.7, sources: ["猎杀者武器箱"], grade: 2 },
+    { id: 536, name: "AK-47 | 深海复仇", minWear: 0, maxWear: 1, sources: ["弯曲猎手武器箱"], grade: 2 },
+    { id: 537, name: "AWP | 暴怒野兽", minWear: 0, maxWear: 1, sources: ["弯曲猎手武器箱"], grade: 2 },
+    { id: 538, name: "M4A1 消音型 | 金蛇缠绕", minWear: 0, maxWear: 1, sources: ["暗影武器箱"], grade: 2 },
+    { id: 539, name: "USP 消音版 | 枪响人亡", minWear: 0, maxWear: 1, sources: ["暗影武器箱"], grade: 2 },
+    { id: 540, name: "AK-47 | 燃料喷射器", minWear: 0, maxWear: 1, sources: ["“野火大行动”武器箱"], grade: 2 },
+    { id: 541, name: "M4A4 | 战场之星", minWear: 0, maxWear: 0.64, sources: ["“野火大行动”武器箱"], grade: 2 },
+    { id: 542, name: "AK-47 | 传承", minWear: 0, maxWear: 0.797346, sources: ["千瓦武器箱"], grade: 2 },
+    { id: 543, name: "AWP | 镀铬大炮", minWear: 0, maxWear: 1, sources: ["千瓦武器箱"], grade: 2 },
+    { id: 544, name: "M4A1 消音型 | 蒸汽波", minWear: 0, maxWear: 0.597321, sources: ["画廊武器箱"], grade: 2 },
+    { id: 545, name: "格洛克 18 型 | 大金牙", minWear: 0, maxWear: 0.730496, sources: ["画廊武器箱"], grade: 2 },
+    { id: 546, name: "锯齿爪刀（★）|夜色", minWear: 0.06, maxWear: 0.8, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 547, name: "骷髅匕首（★）|夜色", minWear: 0.06, maxWear: 0.8, sources: [""], grade: 1 },
+    { id: 548, name: "系绳匕首（★）|夜色", minWear: 0.06, maxWear: 0.8, sources: [""], grade: 1 },
+    { id: 549, name: "海豹短刀（★）|夜色", minWear: 0.06, maxWear: 0.8, sources: ["反恐精英20周年武器箱"], grade: 1 },
+    { id: 550, name: "求生匕首（★）|夜色", minWear: 0.06, maxWear: 0.8, sources: [""], grade: 1 },
+    { id: 551, name: "流浪者匕首（★）|夜色", minWear: 0.06, maxWear: 0.8, sources: ["裂空武器箱", "“裂网大行动”武器箱"], grade: 1 },
+    { id: 552, name: "短剑（★）|夜色", minWear: 0.06, maxWear: 0.8, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 553, name: "折刀（★）|夜色", minWear: 0.06, maxWear: 0.8, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 554, name: "熊刀（★）|夜色", minWear: 0.06, maxWear: 0.8, sources: ["“头号特训”武器箱", "地平线武器箱"], grade: 1 },
+    { id: 555, name: "猎杀者匕首（★）|森林DDPAT", minWear: 0.06, maxWear: 0.8, sources: ["猎杀者武器箱"], grade: 1 },
+    { id: 556, name: "廓尔喀刀（★）|森林DDPAT", minWear: 0.06, maxWear: 0.8, sources: ["千瓦武器箱", "画廊武器箱"], grade: 1 },
+    { id: 557, name: "廓尔喀刀（★）|人工染色", minWear: 0.06, maxWear: 0.8, sources: ["千瓦武器箱", "画廊武器箱"], grade: 1 },
+    { id: 558, name: "廓尔喀刀（★）|北方森林", minWear: 0.06, maxWear: 0.8, sources: ["千瓦武器箱", "画廊武器箱"], grade: 1 },
+    { id: 559, name: "廓尔喀刀（★）|夜色", minWear: 0.06, maxWear: 0.8, sources: ["千瓦武器箱", "画廊武器箱"], grade: 1 },
+    { id: 560, name: "廓尔喀刀（★）|屠夫", minWear: 0.01, maxWear: 0.26, sources: ["千瓦武器箱", "画廊武器箱"], grade: 1 },
+    { id: 561, name: "廓尔喀刀（★）|枯焦之色", minWear: 0.06, maxWear: 0.8, sources: ["千瓦武器箱", "画廊武器箱"], grade: 1 },
+    { id: 562, name: "廓尔喀刀（★）|深红之网", minWear: 0, maxWear: 1, sources: ["千瓦武器箱", "画廊武器箱"], grade: 1 },
+    { id: 563, name: "廓尔喀刀（★）|渐变之色", minWear: 0, maxWear: 0.08, sources: ["千瓦武器箱", "画廊武器箱"], grade: 1 },
+    { id: 564, name: "廓尔喀刀（★）|狩猎网格", minWear: 0.06, maxWear: 0.8, sources: ["千瓦武器箱", "画廊武器箱"], grade: 1 },
+    { id: 565, name: "廓尔喀刀（★）|蓝钢", minWear: 0, maxWear: 1, sources: ["千瓦武器箱", "画廊武器箱"], grade: 1 },
+    { id: 566, name: "廓尔喀刀（★）|表面淬火", minWear: 0, maxWear: 1, sources: ["千瓦武器箱", "画廊武器箱"], grade: 1 },
+    { id: 567, name: "廓尔喀刀（★）|都市伪装", minWear: 0.06, maxWear: 0.8, sources: ["千瓦武器箱", "画廊武器箱"], grade: 1 },
+];
+        // 磨损区间函数
+        function getWearCategory(wear) {
+            if (wear < 0.07) return { 
+                name: "崭新出厂", 
+                class: "wear-factory-new", 
+                textClass: "wear-text-factory-new",
+                color: "#4CAF50" 
+            };
+            if (wear < 0.15) return { 
+                name: "略有磨损", 
+                class: "wear-minimal-wear", 
+                textClass: "wear-text-minimal-wear",
+                color: "#8BC34A" 
+            };
+            if (wear < 0.38) return { 
+                name: "久经沙场", 
+                class: "wear-field-tested", 
+                textClass: "wear-text-field-tested",
+                color: "#FFC107" 
+            };
+            if (wear < 0.45) return { 
+                name: "破损不堪", 
+                class: "wear-well-worn", 
+                textClass: "wear-text-well-worn",
+                color: "#FF9800" 
+            };
+            return { 
+                name: "战痕累累", 
+                class: "wear-battle-scarred", 
+                textClass: "wear-text-battle-scarred",
+                color: "#F44336" 
+            };
+        }
+
+        // 等级名称映射
+        function getGradeName(grade) {
+            const gradeMap = {
+                1: "金",
+                2: "隐秘",
+                3: "保密",
+                4: "受限",
+                5: "军规级"
+            };
+            return gradeMap[grade] || `等级 ${grade}`;
+        }
+
+        // 全局变量，用于管理下拉框状态
+        let activeDropdown = null;
+        // 全局变量，用于存储目标物品
+        let targetItem = null;
+        // 全局变量，用于存储过滤后的物品列表
+        let filteredItems = itemDatabase.filter(item => item.grade > 1);
+
+        // 优化后的自动完成功能 - 添加模糊匹配
+        function autocomplete(inp, items, isTargetItem = false) {
+            let currentFocus;
+            let dropdownId = inp.id + '-dropdown';
+            
+            // 输入事件处理
+            inp.addEventListener("input", function(e) {
+                let a, b, i, val = this.value;
+                closeAllLists();
+                if (!val) { return false; }
+                currentFocus = -1;
+                
+                a = document.createElement("DIV");
+                a.setAttribute("id", dropdownId);
+                a.setAttribute("class", "autocomplete-items");
+                this.parentNode.appendChild(a);
+                
+                // 激活下拉框状态
+                activateDropdown(this, a);
+                
+                // 计算下拉框位置，避免被遮挡
+                const inputRect = inp.getBoundingClientRect();
+                const containerRect = inp.closest('.container').getBoundingClientRect();
+                const spaceBelow = containerRect.bottom - inputRect.bottom;
+                
+                if (spaceBelow < 200) {
+                    a.style.bottom = "100%";
+                    a.style.top = "auto";
+                } else {
+                    a.style.top = "100%";
+                    a.style.bottom = "auto";
+                }
+                
+                // 根据是否为目标物品决定过滤条件
+                const filteredList = isTargetItem ? 
+                    items : 
+                    items.filter(item => item.grade > 1);
+                
+                // 模糊匹配：检查物品名称是否包含输入值（不区分大小写）
+                for (i = 0; i < filteredList.length; i++) {
+                    if (filteredList[i].name.toUpperCase().includes(val.toUpperCase())) {
+                        b = document.createElement("DIV");
+                        b.innerHTML = "<strong>" + filteredList[i].name + "</strong>";
+                        b.innerHTML += " (" + getGradeName(filteredList[i].grade) + ")";
+                        b.innerHTML += "<input type='hidden' value='" + filteredList[i].name + "'>";
+                        
+                        b.addEventListener("mousedown", function(e) {
+                            e.preventDefault();
+                            inp.value = this.getElementsByTagName("input")[0].value;
+                            closeAllLists();
+                            
+                            // 触发物品选择事件
+                            const event = new Event('change', { bubbles: true });
+                            inp.dispatchEvent(event);
+                        });
+                        
+                        b.addEventListener("click", function(e) {
+                            inp.value = this.getElementsByTagName("input")[0].value;
+                            closeAllLists();
+                            
+                            // 触发物品选择事件
+                            const event = new Event('change', { bubbles: true });
+                            inp.dispatchEvent(event);
+                        });
+                        
+                        a.appendChild(b);
+                    }
+                }
+                
+                // 显示下拉框
+                a.style.display = 'block';
+            });
+            
+            // 键盘事件处理
+            inp.addEventListener("keydown", function(e) {
+                let x = document.getElementById(dropdownId);
+                if (x) x = x.getElementsByTagName("div");
+                
+                // 向下键
+                if (e.keyCode == 40) {
+                    currentFocus++;
+                    addActive(x);
+                    e.preventDefault();
+                }
+                // 向上键
+                else if (e.keyCode == 38) {
+                    currentFocus--;
+                    addActive(x);
+                    e.preventDefault();
+                }
+                // 回车键
+                else if (e.keyCode == 13) {
+                    e.preventDefault();
+                    if (currentFocus > -1 && x) {
+                        x[currentFocus].click();
+                    } else if (x && x.length > 0) {
+                        x[0].click();
+                    } else {
+                        // 如果没有匹配项，保持当前输入
+                        closeAllLists();
+                    }
+                }
+                // ESC键关闭下拉框
+                else if (e.keyCode == 27) {
+                    closeAllLists();
+                }
+            });
+            
+            // 输入框获得焦点时显示下拉框（如果有内容）
+            inp.addEventListener("focus", function() {
+                if (this.value) {
+                    this.dispatchEvent(new Event('input'));
+                }
+                this.classList.add('input-focused');
+            });
+            
+            // 输入框失去焦点时关闭下拉框（延迟处理）
+            inp.addEventListener("blur", function(e) {
+                setTimeout(function() {
+                    closeAllLists();
+                }, 150);
+                this.classList.remove('input-focused');
+            });
+            
+            function addActive(x) {
+                if (!x) return false;
+                removeActive(x);
+                if (currentFocus >= x.length) currentFocus = 0;
+                if (currentFocus < 0) currentFocus = (x.length - 1);
+                x[currentFocus].classList.add("autocomplete-active");
+                
+                // 滚动到选中的项目
+                x[currentFocus].scrollIntoView({
+                    block: "nearest",
+                    behavior: "smooth"
+                });
+            }
+            
+            function removeActive(x) {
+                for (let i = 0; i < x.length; i++) {
+                    x[i].classList.remove("autocomplete-active");
+                }
+            }
+            
+            function closeAllLists(elmnt) {
+                const x = document.getElementsByClassName("autocomplete-items");
+                for (let i = 0; i < x.length; i++) {
+                    if (elmnt != x[i] && elmnt != inp) {
+                        x[i].style.display = 'none';
+                    }
+                }
+                deactivateDropdown();
+            }
+            
+            // 点击外部关闭下拉框
+            document.addEventListener("click", function (e) {
+                closeAllLists(e.target);
+            });
+        }
+
+        // 激活下拉框状态
+        function activateDropdown(inputElement, dropdownElement) {
+            // 关闭之前的下拉框
+            if (activeDropdown && activeDropdown !== dropdownElement) {
+                activeDropdown.style.display = 'none';
+            }
+            
+            activeDropdown = dropdownElement;
+            
+            // 添加状态指示器
+            const statusIndicator = document.createElement('div');
+            statusIndicator.className = 'dropdown-status';
+            statusIndicator.textContent = '使用↑↓键选择，按Enter确认';
+            inputElement.parentNode.appendChild(statusIndicator);
+        }
+
+        // 停用下拉框状态
+        function deactivateDropdown() {
+            activeDropdown = null;
+            
+            // 移除状态指示器
+            document.querySelectorAll('.dropdown-status').forEach(element => {
+                element.remove();
+            });
+        }
+
+        // 根据目标物品过滤可用的输入物品
+        function filterInputItems(target) {
+            if (!target) {
+                return itemDatabase.filter(item => item.grade > 1);
+            }
+            
+            // 获取目标物品的产出来源
+            const sources = target.sources;
+            // 获取目标物品的等级+1
+            const targetGrade = target.grade + 1;
+            
+            // 返回符合条件的所有物品
+            return itemDatabase.filter(item => 
+                item.grade === targetGrade && 
+                item.sources.some(source => sources.includes(source))
+            );
+        }
+
+        // 获取目标物品同一产出来源的等级+1的所有物品
+        function getAvailableMaterials(target) {
+            if (!target) {
+                return [];
+            }
+            
+            // 获取目标物品的产出来源
+            const sources = target.sources;
+            // 获取目标物品的等级+1
+            const targetGrade = target.grade + 1;
+            
+            // 返回符合条件的所有物品
+            return itemDatabase.filter(item => 
+                item.grade === targetGrade && 
+                item.sources.some(source => sources.includes(source))
+            );
+        }
+
+        // 反向计算所需磨损值 - 考虑已填写的磨损值
+        function calculateReverseWear(targetItem, targetWear, inputItems) {
+            // 计算目标物品的归一化磨损
+            const targetNormalizedWear = (targetWear - targetItem.minWear) / (targetItem.maxWear - targetItem.minWear);
+            
+            // 计算已填写磨损值的输入物品的归一化磨损总和
+            let totalNormalizedWear = 0;
+            let filledCount = 0;
+            
+            inputItems.forEach(inputItem => {
+                if (inputItem.wear !== null && inputItem.wear !== undefined) {
+                    const normalizedWear = (inputItem.wear - inputItem.item.minWear) / (inputItem.item.maxWear - inputItem.item.minWear);
+                    totalNormalizedWear += normalizedWear;
+                    filledCount++;
+                }
+            });
+            
+            // 计算剩余物品所需的归一化磨损总和
+            const remainingNormalizedWear = targetNormalizedWear * inputItems.length - totalNormalizedWear;
+            const remainingCount = inputItems.length - filledCount;
+            
+            // 如果所有物品都已填写磨损值，直接返回
+            if (remainingCount === 0) {
+                return inputItems.map(inputItem => inputItem.wear);
+            }
+            
+            // 计算每个剩余物品所需的归一化磨损
+            const normalizedWearPerItem = remainingNormalizedWear / remainingCount;
+            
+            // 计算每个输入物品所需的磨损值
+            const requiredWears = inputItems.map(inputItem => {
+                // 如果已经填写了磨损值，使用填写的值
+                if (inputItem.wear !== null && inputItem.wear !== undefined) {
+                    return inputItem.wear;
+                }
+                
+                // 使用目标归一化磨损反推每个输入物品的磨损值
+                const requiredWear = normalizedWearPerItem * (inputItem.item.maxWear - inputItem.item.minWear) + inputItem.item.minWear;
+                
+                // 确保磨损值在有效范围内
+                return Math.max(inputItem.item.minWear, Math.min(inputItem.item.maxWear, requiredWear));
+            });
+            
+            return requiredWears;
+        }
+
+        // 手动显示下拉框的函数 - 无视匹配规则，显示所有可用物品
+        function showDropdown(inputElement, items) {
+            closeAllLists();
+            
+            let a = document.createElement("DIV");
+            a.setAttribute("id", inputElement.id + '-manual-dropdown');
+            a.setAttribute("class", "autocomplete-items");
+            inputElement.parentNode.appendChild(a);
+            
+            // 激活下拉框状态
+            activateDropdown(inputElement, a);
+            
+            // 计算下拉框位置，避免被遮挡
+            const inputRect = inputElement.getBoundingClientRect();
+            const containerRect = inputElement.closest('.container').getBoundingClientRect();
+            const spaceBelow = containerRect.bottom - inputRect.bottom;
+            
+            if (spaceBelow < 200) {
+                a.style.bottom = "100%";
+                a.style.top = "auto";
+            } else {
+                a.style.top = "100%";
+                a.style.bottom = "auto";
+            }
+            
+            // 添加所有可选的物品（无视匹配规则）
+            items.forEach(item => {
+                let b = document.createElement("DIV");
+                b.innerHTML = "<strong>" + item.name + "</strong>";
+                b.innerHTML += " (" + getGradeName(item.grade) + ")";
+                b.innerHTML += "<input type='hidden' value='" + item.name + "'>";
+                
+                b.addEventListener("mousedown", function(e) {
+                    e.preventDefault();
+                    inputElement.value = this.getElementsByTagName("input")[0].value;
+                    closeAllLists();
+                    
+                    // 触发物品选择事件
+                    const event = new Event('change', { bubbles: true });
+                    inputElement.dispatchEvent(event);
+                });
+                
+                b.addEventListener("click", function(e) {
+                    inputElement.value = this.getElementsByTagName("input")[0].value;
+                    closeAllLists();
+                    
+                    // 触发物品选择事件
+                    const event = new Event('change', { bubbles: true });
+                    inputElement.dispatchEvent(event);
+                });
+                
+                a.appendChild(b);
+            });
+            
+            // 显示下拉框
+            a.style.display = 'block';
+        }
+
+        // 显示可用合成材料
+        function displayAvailableMaterials(materials) {
+            const materialsList = document.getElementById('materials-list');
+            const availableMaterials = document.getElementById('available-materials');
+            
+            if (materials.length === 0) {
+                availableMaterials.style.display = 'none';
+                return;
+            }
+            
+            let materialsHTML = '';
+            
+            materials.forEach(material => {
+                materialsHTML += `
+                    <div class="material-item">
+                        <div class="material-name">${material.name}</div>
+                        <div class="material-grade">${getGradeName(material.grade)}</div>
+                        <div class="material-sources">来源: ${material.sources.join(', ')}</div>
+                    </div>
+                `;
+            });
+            
+            materialsList.innerHTML = materialsHTML;
+            availableMaterials.style.display = 'block';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const calculateBtn = document.getElementById('calculate');
+            const resetBtn = document.getElementById('reset');
+            const reverseCalculateBtn = document.getElementById('reverse-calculate');
+            const resultSection = document.getElementById('result-section');
+            const synthesisResult = document.getElementById('synthesis-result');
+            const probabilityList = document.getElementById('probability-list');
+            const itemInputsContainer = document.getElementById('item-inputs');
+            const reverseResult = document.getElementById('reverse-result');
+            const reverseResultContent = document.getElementById('reverse-result-content');
+            const targetItemDropdownBtn = document.getElementById('target-item-dropdown-btn');
+            
+            let currentResults = [];
+            
+            // 为目标物品输入框添加自动完成功能
+            const targetItemInput = document.getElementById('target-item');
+            autocomplete(targetItemInput, itemDatabase, true);
+            
+            // 目标物品下拉按钮点击事件
+            targetItemDropdownBtn.addEventListener('click', function() {
+                showDropdown(targetItemInput, itemDatabase);
+            });
+            
+            // 目标物品选择事件
+            targetItemInput.addEventListener('change', function() {
+                const itemName = this.value.trim();
+                const selectedItem = itemDatabase.find(item => item.name === itemName);
+                
+                if (selectedItem) {
+                    targetItem = selectedItem;
+                    filteredItems = filterInputItems(selectedItem);
+                    
+                    // 显示可用合成材料
+                    const availableMaterials = getAvailableMaterials(selectedItem);
+                    displayAvailableMaterials(availableMaterials);
+                    
+                    // 隐藏错误消息
+                    document.getElementById('target-item-error').style.display = 'none';
+                    
+                    // 更新所有输入框的自动完成列表
+                    for (let i = 1; i <= 5; i++) {
+                        const itemInput = document.getElementById(`item${i}`);
+                        // 重新初始化自动完成功能，使用过滤后的物品列表
+                        autocomplete(itemInput, filteredItems);
+                        
+                        // 显示下拉按钮
+                        const dropdownBtn = document.getElementById(`item${i}-dropdown-btn`);
+                        if (dropdownBtn) {
+                            dropdownBtn.style.display = 'block';
+                        }
+                    }
+                } else {
+                    // 目标物品被清空，解除限制
+                    targetItem = null;
+                    filteredItems = itemDatabase.filter(item => item.grade > 1);
+                    document.getElementById('target-item-error').style.display = 'none';
+                    
+                    // 隐藏可用合成材料区域
+                    document.getElementById('available-materials').style.display = 'none';
+                    
+                    // 重新初始化输入框A的自动完成功能，使用全部物品（等级大于1）
+                    for (let i = 1; i <= 5; i++) {
+                        const itemInput = document.getElementById(`item${i}`);
+                        // 重新初始化自动完成功能，使用全部物品（等级大于1）
+                        autocomplete(itemInput, filteredItems);
+                        
+                        // 隐藏下拉按钮
+                        const dropdownBtn = document.getElementById(`item${i}-dropdown-btn`);
+                        if (dropdownBtn) {
+                            dropdownBtn.style.display = 'none';
+                        }
+                    }
+                }
+            });
+            
+            // 生成5个物品输入卡片
+            for (let i = 1; i <= 5; i++) {
+                const itemCard = document.createElement('div');
+                itemCard.className = 'item-card';
+                itemCard.id = `item-card-${i}`;
+                
+                itemCard.innerHTML = `
+                    <div class="item-header">
+                        <div class="item-number">物品 ${i}</div>
+                        <div class="level-indicator" id="level-indicator${i}">等级: -</div>
+                    </div>
+                    <div>
+                        <label for="item${i}">物品名称</label>
+                        <div class="autocomplete input-with-dropdown">
+                            <input type="text" id="item${i}" class="item-input" placeholder="输入物品名称" autocomplete="off">
+                            <button class="dropdown-btn" id="item${i}-dropdown-btn" style="display: none;">▼</button>
+                        </div>
+                        <div class="error-message" id="item-error${i}">请选择有效的物品（等级需大于1）</div>
+                    </div>
+                    <div>
+                        <label for="wear${i}">磨损值</label>
+                        <input type="number" id="wear${i}" min="0" max="1" step="0.01" placeholder="0.00 - 1.00" disabled>
+                        <div class="error-message" id="wear-error${i}">磨损值超出物品允许范围</div>
+                        <div class="success-message" id="wear-success${i}">磨损值在允许范围内</div>
+                    </div>
+                    <div class="item-properties" id="properties${i}" style="display: none;">
+                        <div class="property">
+                            <span class="property-label">最低磨损</span>
+                            <span class="property-value" id="min-wear${i}">0.00</span>
+                        </div>
+                        <div class="property">
+                            <span class="property-label">最高磨损</span>
+                            <span class="property-value" id="max-wear${i}">0.00</span>
+                        </div>
+                        <div class="property">
+                            <span class="property-label">产出来源</span>
+                            <span class="property-value" id="source${i}">未知</span>
+                        </div>
+                        <div class="property">
+                            <span class="property-label">物品等级</span>
+                            <span class="property-value" id="grade${i}">0</span>
+                        </div>
+                    </div>
+                `;
+                
+                itemInputsContainer.appendChild(itemCard);
+                
+                // 为物品输入框添加自动完成功能
+                const itemInput = document.getElementById(`item${i}`);
+                autocomplete(itemInput, filteredItems);
+                
+                // 为下拉按钮添加点击事件
+                const dropdownBtn = document.getElementById(`item${i}-dropdown-btn`);
+                dropdownBtn.addEventListener('click', function() {
+                    // 如果目标物品存在，使用过滤后的列表；否则使用全部物品（等级大于1）
+                    const itemsToShow = targetItem ? filteredItems : itemDatabase.filter(item => item.grade > 1);
+                    showDropdown(itemInput, itemsToShow);
+                });
+                
+                // 为物品输入框添加事件监听
+                const wearInput = document.getElementById(`wear${i}`);
+                const propertiesDiv = document.getElementById(`properties${i}`);
+                const levelIndicator = document.getElementById(`level-indicator${i}`);
+                
+                itemInput.addEventListener('change', function() {
+                    const itemName = this.value.trim();
+                    const selectedItem = itemDatabase.find(item => item.name === itemName);
+                    
+                    if (selectedItem && selectedItem.grade > 1) {
+                        // 启用磨损值输入框
+                        wearInput.disabled = false;
+                        
+                        // 更新磨损值范围
+                        wearInput.min = selectedItem.minWear;
+                        wearInput.max = selectedItem.maxWear;
+                        wearInput.placeholder = `${selectedItem.minWear.toFixed(2)} - ${selectedItem.maxWear.toFixed(2)}`;
+                        
+                        // 更新等级指示器
+                        levelIndicator.textContent = getGradeName(selectedItem.grade);
+                        
+                        // 显示物品属性
+                        document.getElementById(`min-wear${i}`).textContent = selectedItem.minWear.toFixed(2);
+                        document.getElementById(`max-wear${i}`).textContent = selectedItem.maxWear.toFixed(2);
+                        document.getElementById(`source${i}`).textContent = selectedItem.sources.join(', ');
+                        document.getElementById(`grade${i}`).textContent = getGradeName(selectedItem.grade);
+                        
+                        propertiesDiv.style.display = 'grid';
+                        
+                        // 隐藏物品错误消息
+                        document.getElementById(`item-error${i}`).style.display = 'none';
+                    } else {
+                        // 禁用磨损值输入框
+                        wearInput.disabled = true;
+                        wearInput.value = '';
+                        
+                        // 重置等级指示器
+                        levelIndicator.textContent = '等级: -';
+                        
+                        // 隐藏物品属性
+                        propertiesDiv.style.display = 'none';
+                        
+                        // 显示物品错误消息
+                        document.getElementById(`item-error${i}`).style.display = 'block';
+                    }
+                    
+                    // 重置磨损值验证消息
+                    document.getElementById(`wear-error${i}`).style.display = 'none';
+                    document.getElementById(`wear-success${i}`).style.display = 'none';
+                });
+                
+                // 为磨损值输入框添加事件监听
+                wearInput.addEventListener('input', function() {
+                    const itemName = itemInput.value.trim();
+                    const selectedItem = itemDatabase.find(item => item.name === itemName);
+                    
+                    if (selectedItem) {
+                        const wearValue = parseFloat(this.value);
+                        
+                        if (!isNaN(wearValue) && wearValue >= selectedItem.minWear && wearValue <= selectedItem.maxWear) {
+                            // 磨损值在允许范围内
+                            document.getElementById(`wear-error${i}`).style.display = 'none';
+                            document.getElementById(`wear-success${i}`).style.display = 'block';
+                        } else {
+                            // 磨损值超出允许范围
+                            document.getElementById(`wear-error${i}`).style.display = 'block';
+                            document.getElementById(`wear-success${i}`).style.display = 'none';
+                        }
+                    }
+                });
+            }
+            
+            // 计算按钮点击事件
+            calculateBtn.addEventListener('click', function() {
+                let inputItems = [];
+                let hasErrors = false;
+                let commonGrade = null;
+                
+                // 验证输入并收集物品信息
+                for (let i = 1; i <= 5; i++) {
+                    const itemInput = document.getElementById(`item${i}`);
+                    const wearInput = document.getElementById(`wear${i}`);
+                    
+                    const itemName = itemInput.value.trim();
+                    const selectedItem = itemDatabase.find(item => item.name === itemName);
+                    const wearValue = parseFloat(wearInput.value);
+                    
+                    // 验证物品是否已选择
+                    if (!selectedItem) {
+                        document.getElementById(`item-error${i}`).style.display = 'block';
+                        hasErrors = true;
+                        continue;
+                    } else {
+                        document.getElementById(`item-error${i}`).style.display = 'none';
+                    }
+                    
+                    // 验证等级是否大于1
+                    if (selectedItem.grade <= 1) {
+                        document.getElementById(`item-error${i}`).style.display = 'block';
+                        document.getElementById(`item-error${i}`).textContent = "1级物品不能作为合成材料";
+                        hasErrors = true;
+                        continue;
+                    }
+                    
+                    // 验证磨损值
+                    if (isNaN(wearValue) || wearValue < selectedItem.minWear || wearValue > selectedItem.maxWear) {
+                        document.getElementById(`wear-error${i}`).style.display = 'block';
+                        hasErrors = true;
+                        continue;
+                    } else {
+                        document.getElementById(`wear-error${i}`).style.display = 'none';
+                    }
+                    
+                    // 检查等级是否一致
+                    if (commonGrade === null) {
+                        commonGrade = selectedItem.grade;
+                    } else if (selectedItem.grade !== commonGrade) {
+                        alert(`错误：所有物品必须等级相同！物品${i}的等级为${getGradeName(selectedItem.grade)}，但其他物品等级为${getGradeName(commonGrade)}`);
+                        hasErrors = true;
+                        break;
+                    }
+                    
+                    inputItems.push({
+                        item: selectedItem,
+                        wear: wearValue
+                    });
+                }
+                
+                // 如果有错误，停止处理
+                if (hasErrors || inputItems.length !== 5) {
+                    if (inputItems.length !== 5 && !hasErrors) {
+                        alert('请完整填写5个物品的信息！');
+                    }
+                    return;
+                }
+                
+                // 计算合成结果
+                currentResults = calculateAllSynthesisResults(inputItems);
+                
+                // 显示结果
+                displaySynthesisResults(currentResults);
+                resultSection.style.display = 'block';
+            });
+            
+            // 重置按钮点击事件
+            resetBtn.addEventListener('click', function() {
+                // 清空所有输入
+                for (let i = 1; i <= 5; i++) {
+                    document.getElementById(`item${i}`).value = '';
+                    document.getElementById(`wear${i}`).value = '';
+                    document.getElementById(`wear${i}`).disabled = true;
+                    document.getElementById(`properties${i}`).style.display = 'none';
+                    document.getElementById(`level-indicator${i}`).textContent = '等级: -';
+                    
+                    // 隐藏所有错误消息
+                    document.getElementById(`item-error${i}`).style.display = 'none';
+                    document.getElementById(`wear-error${i}`).style.display = 'none';
+                    document.getElementById(`wear-success${i}`).style.display = 'none';
+                    
+                    // 隐藏下拉按钮
+                    const dropdownBtn = document.getElementById(`item${i}-dropdown-btn`);
+                    if (dropdownBtn) {
+                        dropdownBtn.style.display = 'none';
+                    }
+                }
+                
+                // 清空目标物品和磨损值
+                document.getElementById('target-item').value = '';
+                document.getElementById('target-wear').value = '';
+                document.getElementById('target-item-error').style.display = 'none';
+                document.getElementById('target-wear-error').style.display = 'none';
+                targetItem = null;
+                filteredItems = itemDatabase.filter(item => item.grade > 1);
+                
+                // 隐藏可用合成材料区域
+                document.getElementById('available-materials').style.display = 'none';
+                
+                // 隐藏结果区域
+                resultSection.style.display = 'none';
+                reverseResult.style.display = 'none';
+            });
+            
+            // 反向计算按钮点击事件
+            reverseCalculateBtn.addEventListener('click', function() {
+                // 验证目标物品
+                if (!targetItem) {
+                    document.getElementById('target-item-error').style.display = 'block';
+                    return;
+                } else {
+                    document.getElementById('target-item-error').style.display = 'none';
+                }
+                
+                // 验证目标磨损值
+                const targetWearValue = parseFloat(document.getElementById('target-wear').value);
+                if (isNaN(targetWearValue) || targetWearValue < 0 || targetWearValue > 1) {
+                    document.getElementById('target-wear-error').style.display = 'block';
+                    return;
+                } else {
+                    document.getElementById('target-wear-error').style.display = 'none';
+                }
+                
+                // 验证所有输入物品已选择
+                let inputItems = [];
+                let hasErrors = false;
+                
+                for (let i = 1; i <= 5; i++) {
+                    const itemInput = document.getElementById(`item${i}`);
+                    const wearInput = document.getElementById(`wear${i}`);
+                    const itemName = itemInput.value.trim();
+                    const selectedItem = itemDatabase.find(item => item.name === itemName);
+                    
+                    if (!selectedItem) {
+                        document.getElementById(`item-error${i}`).style.display = 'block';
+                        hasErrors = true;
+                    } else {
+                        document.getElementById(`item-error${i}`).style.display = 'none';
+                        // 获取磨损值，如果已填写则使用，否则为null
+                        const wearValue = wearInput.value ? parseFloat(wearInput.value) : null;
+                        inputItems.push({
+                            item: selectedItem,
+                            wear: wearValue
+                        });
+                    }
+                }
+                
+                if (hasErrors || inputItems.length !== 5) {
+                    alert('请先选择5个输入物品！');
+                    return;
+                }
+                
+                // 计算所需磨损值
+                const requiredWears = calculateReverseWear(targetItem, targetWearValue, inputItems);
+                
+                // 显示反向计算结果
+                displayReverseResult(inputItems, requiredWears);
+                reverseResult.style.display = 'block';
+            });
+            
+            // 计算所有可能的合成结果
+            function calculateAllSynthesisResults(inputItems) {
+                const inputGrade = inputItems[0].item.grade;
+                const targetGrade = inputGrade - 1;
+                
+                // 计算来源概率分布
+                const sourceProbabilities = calculateSourceProbabilities(inputItems, targetGrade);
+                
+                // 计算所有可能的结果
+                const allResults = [];
+                Object.values(sourceProbabilities).forEach(prob => {
+                    // 计算合成物品的磨损值
+                    const synthesizedWear = calculateSynthesizedWear(inputItems, prob.item);
+                    
+                    allResults.push({
+                        item: prob.item,
+                        wear: synthesizedWear,
+                        probability: prob.probability
+                    });
+                });
+                
+                // 按概率从高到低排序
+                allResults.sort((a, b) => b.probability - a.probability);
+                
+                return allResults;
+            }
+            
+            // 计算来源概率分布
+            function calculateSourceProbabilities(inputItems, targetGrade) {
+                const sourceProbabilities = {};
+                
+                // 对于每个输入物品
+                inputItems.forEach(input => {
+                    const inputItem = input.item;
+                    
+                    // 获取输入物品的所有来源
+                    const sources = inputItem.sources;
+                    
+                    // 对于每个来源
+                    sources.forEach(source => {
+                        // 获取该来源下目标等级的所有物品
+                        const targetItems = itemDatabase.filter(item => 
+                            item.grade === targetGrade && 
+                            item.sources.includes(source)
+                        );
+                        
+                        // 如果该来源有目标等级的物品
+                        if (targetItems.length > 0) {
+                            // 每个目标物品的概率 = 20% / 该来源下目标等级物品数量
+                            const probabilityPerItem = 0.2 / targetItems.length;
+                            
+                            targetItems.forEach(item => {
+                                if (!sourceProbabilities[item.id]) {
+                                    sourceProbabilities[item.id] = {
+                                        item: item,
+                                        probability: 0
+                                    };
+                                }
+                                sourceProbabilities[item.id].probability += probabilityPerItem;
+                            });
+                        }
+                    });
+                });
+                
+                return sourceProbabilities;
+            }
+            
+            // 计算合成物品的磨损值
+            function calculateSynthesizedWear(inputItems, synthesizedItem) {
+                // 计算平均归一化磨损
+                let totalNormalizedWear = 0;
+                
+                inputItems.forEach(input => {
+                    const normalizedWear = (input.wear - input.item.minWear) / (input.item.maxWear - input.item.minWear);
+                    totalNormalizedWear += normalizedWear;
+                });
+                
+                const averageNormalizedWear = totalNormalizedWear / inputItems.length;
+                
+                // 计算合成物品的磨损值
+                const synthesizedWear = averageNormalizedWear * 
+                    (synthesizedItem.maxWear - synthesizedItem.minWear) + 
+                    synthesizedItem.minWear;
+                
+                // 确保磨损值在有效范围内
+                return Math.max(synthesizedItem.minWear, Math.min(synthesizedItem.maxWear, synthesizedWear));
+            }
+            
+            // 显示所有合成结果的函数
+            function displaySynthesisResults(results) {
+                // 默认选择第一个结果
+                if (results.length > 0) {
+                    displaySelectedResult(results[0]);
+                }
+                
+                // 显示所有可能结果
+                probabilityList.innerHTML = '';
+                results.forEach((result, index) => {
+                    const wearCategory = getWearCategory(result.wear);
+                    
+                    const probabilityItem = document.createElement('div');
+                    probabilityItem.className = `probability-item ${index === 0 ? 'selected' : ''}`;
+                    probabilityItem.dataset.index = index;
+                    
+                    probabilityItem.innerHTML = `
+                        <div>
+                            <span class="wear-indicator" style="background-color: ${wearCategory.color}"></span>
+                            ${result.item.name}
+                        </div>
+                        <div>${(result.probability * 100).toFixed(2)}%</div>
+                        <div>${result.wear.toFixed(4)}</div>
+                        <div class="${wearCategory.textClass}">${wearCategory.name}</div>
+                    `;
+                    
+                    probabilityItem.addEventListener('click', function() {
+                        // 移除所有选中状态
+                        document.querySelectorAll('.probability-item').forEach(item => {
+                            item.classList.remove('selected');
+                        });
+                        
+                        // 添加当前选中状态
+                        this.classList.add('selected');
+                        
+                        // 显示选中的结果
+                        const selectedIndex = parseInt(this.dataset.index);
+                        displaySelectedResult(results[selectedIndex]);
+                    });
+                    
+                    probabilityList.appendChild(probabilityItem);
+                });
+            }
+            
+            // 显示选中结果的函数
+            function displaySelectedResult(result) {
+                const wearCategory = getWearCategory(result.wear);
+                
+                synthesisResult.innerHTML = `
+                    <div class="property">
+                        <span class="property-label">物品名称</span>
+                        <span class="property-value">${result.item.name}</span>
+                    </div>
+                    <div class="property">
+                        <span class="property-label">物品等级</span>
+                        <span class="property-value">${getGradeName(result.item.grade)}</span>
+                    </div>
+                    <div class="property">
+                        <span class="property-label">产出来源</span>
+                        <span class="property-value">${result.item.sources.join(', ')}</span>
+                    </div>
+                    <div class="property">
+                        <span class="property-label">最低磨损</span>
+                        <span class="property-value">${result.item.minWear.toFixed(2)}</span>
+                    </div>
+                    <div class="property">
+                        <span class="property-label">最高磨损</span>
+                        <span class="property-value">${result.item.maxWear.toFixed(2)}</span>
+                    </div>
+                    <div class="property">
+                        <span class="property-label">合成磨损</span>
+                        <span class="property-value">${result.wear.toFixed(4)}</span>
+                    </div>
+                    <div class="property">
+                        <span class="property-label">磨损区间</span>
+                        <span class="property-value ${wearCategory.textClass}">${wearCategory.name}</span>
+                    </div>
+                    <div class="property">
+                        <span class="property-label">出现概率</span>
+                        <span class="property-value">${(result.probability * 100).toFixed(2)}%</span>
+                    </div>
+                `;
+            }
+            
+            // 显示反向计算结果的函数
+            function displayReverseResult(inputItems, requiredWears) {
+                let resultHTML = '';
+                
+                inputItems.forEach((input, index) => {
+                    const requiredWear = requiredWears[index];
+                    const wearCategory = getWearCategory(requiredWear);
+                    
+                    // 检查是否已有磨损值
+                    const hasExistingWear = input.wear !== null && input.wear !== undefined;
+                    
+                    resultHTML += `
+                        <div class="reverse-result-item">
+                            <div>
+                                <strong>物品 ${index + 1}:</strong> ${input.item.name}
+                            </div>
+                            <div>
+                                <span>${hasExistingWear ? '当前磨损' : '所需磨损'}: </span>
+                                <span class="${wearCategory.textClass}">${requiredWear.toFixed(4)} (${wearCategory.name})</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                reverseResultContent.innerHTML = resultHTML;
+            }
+        });
+    </script>
+</body>
+</html>
