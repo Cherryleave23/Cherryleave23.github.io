@@ -154,47 +154,193 @@
             grid-template-columns: repeat(5, 1fr);
         }
         
-        .item-card {
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            padding: 15px;
-            transition: all 0.3s;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-        
-        .item-card:hover {
-            background-color: #e9ecef;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .item-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-        }
-        
-        .item-number {
-            background-color: #3498db;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-        
-        .level-indicator {
-            background-color: #2c3e50; /* 改为深灰色偏黑 */
-            color: white;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-        
+      /* 确保物品卡片布局正确 */
+.item-card {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    transition: all 0.3s;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* 成本指示器 - 调整布局以利用空白区域 */
+.cost-indicator {
+    background-color: #27ae60;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 15px;
+    font-size: 0.65rem;
+    font-weight: bold;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 26px;
+    box-sizing: border-box;
+    margin-left: auto; /* 确保靠右对齐 */
+    /* 移除最大宽度限制，允许利用空白区域 */
+    max-width: none;
+    /* 允许成本指示器根据需要扩展宽度 */
+    flex: 1; /* 这将使成本区块占据剩余空间 */
+    min-width: 0; /* 允许在必要时收缩 */
+    justify-content: flex-end; /* 内容靠右对齐 */
+}
+
+/* 成本指示器 - 消除内部空白，充分利用空间 */
+.cost-indicator {
+    background-color: #27ae60;
+    color: white;
+    padding: 4px 6px;
+    border-radius: 15px;
+    font-size: 0.65rem;
+    font-weight: bold;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    height: 26px;
+    box-sizing: border-box;
+    margin-left: auto;
+    max-width: none;
+    flex: 1;
+    min-width: 0;
+    justify-content: flex-end;
+}
+
+/* 成本输入组样式 */
+.cost-input-group {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+    flex: 1;
+    justify-content: flex-end;
+    min-width: 0;
+}
+
+.cost-input {
+    width: 100% !important;
+    padding: 2px 4px !important;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.75rem !important; /* 增大字体大小 */
+    text-align: left !important; /* 改为左侧对齐 */
+    background-color: white;
+    height: 18px;
+    line-height: 1;
+    box-sizing: border-box;
+    min-width: 50px;
+    font-weight: 500; /* 增加字体粗细，使数字更清晰 */
+}
+
+.save-cost-btn {
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    width: 7px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.5rem;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    padding: 0;
+    min-width: 7px;
+}
+
+.save-cost-btn:hover {
+    background-color: #219653;
+    transform: scale(1.05);
+}
+
+/* 成本指示器 - 保持其他样式不变 */
+.cost-indicator {
+    background-color: #27ae60;
+    color: white;
+    padding: 4px 6px;
+    border-radius: 15px;
+    font-size: 0.65rem;
+    font-weight: bold;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    height: 26px;
+    box-sizing: border-box;
+    margin-left: auto;
+    max-width: none;
+    flex: 1;
+    min-width: 0;
+    justify-content: flex-end;
+}
+
+.save-cost-btn:hover {
+    background-color: #219653;
+    transform: scale(1.05);
+}
+
+/* 保持物品编号和等级指示器不变 */
+.item-number {
+    background-color: #3498db;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 15px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    flex-shrink: 0;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    white-space: nowrap;
+}
+
+.level-indicator {
+    background-color: #2c3e50;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 15px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    flex-shrink: 0;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    white-space: nowrap;
+    margin-left: 0;
+}
+
+/* 物品头部容器 - 确保布局正确 */
+.item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    gap: 8px;
+    height: 30px;
+    min-width: 0;
+}
+
+
+
+/* 确保输入框可见 */
+.item-card input[type="text"],
+.item-card input[type="number"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s;
+    background-color: white;
+    display: block; /* 确保输入框显示 */
+}
         /* 等级颜色样式 */
         .grade-2 {
             color: #ff0000; /* 红色 - 隐秘 */
@@ -333,7 +479,7 @@
         /* 修改合成结果布局 - 左右互换 */
         .synthesis-result {
             display: grid;
-            grid-template-columns: 2fr 1fr;
+            grid-template-columns: 2fr 1fr 1fr;
             gap: 30px;
             margin-bottom: 20px;
         }
@@ -355,18 +501,96 @@
             overflow-y: auto;
         }
         
-        .probability-item {
-            background-color: #2c3e50;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 10px;
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 10px;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
+       /* 修改概率项布局，缩小列间距 */
+.probability-item {
+    background-color: #2c3e50;
+    padding: 12px 8px; /* 减少内边距 */
+    border-radius: 5px;
+    margin-bottom: 8px; /* 减少项间距 */
+    display: grid;
+    grid-template-columns: 3fr 0.8fr 0.8fr 1fr 1.2fr; /* 调整列宽比例 */
+    gap: 6px; /* 缩小列间距 */
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 1rem; /* 稍微减小字体大小 */
+}
+
+/* 概率项中的价格输入区域样式 */
+.probability-price-input {
+    display: flex;
+    align-items: center;
+    gap: 3px; /* 缩小输入框和按钮间距 */
+    height: 26px;
+}
+
+.probability-price-input input {
+    width: 100%;
+    padding: 3px 5px; /* 减少内边距 */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.8rem; /* 减小字体 */
+    background-color: white;
+    color: #333;
+    height: 20px; /* 减小高度 */
+    box-sizing: border-box;
+}
+
+.probability-save-btn {
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    width: 18px; /* 减小宽度 */
+    height: 20px; /* 减小高度 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.55rem; /* 减小字体 */
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.probability-save-btn:hover {
+    background-color: #219653;
+    transform: scale(1.05);
+}
+
+/* 确保物品名称不换行 */
+.probability-item > div:first-child {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 磨损指示器样式调整 */
+.wear-indicator {
+    display: inline-block;
+    width: 8px; /* 减小尺寸 */
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 4px; /* 减小右边距 */
+    flex-shrink: 0;
+}
+
+/* 响应式调整 */
+@media (max-width: 1200px) {
+    .probability-item {
+        grid-template-columns: 1fr;
+        text-align: left;
+        gap: 6px;
+        padding: 10px;
+    }
+    
+    .probability-price-input {
+        justify-content: flex-start;
+    }
+    
+    .probability-item > div:first-child {
+        white-space: normal; /* 在移动端允许换行 */
+    }
+}
         
         .probability-item:hover {
             background-color: #3c5166;
@@ -403,6 +627,95 @@
         
         .result-properties .property-value {
             color: white;
+        }
+        
+        /* 新增：本炉收益区块样式 */
+        .profit-section {
+            background-color: #34495e;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .profit-section h3 {
+            color: #3498db;
+            margin-bottom: 15px;
+        }
+        
+       /* 修改收益数据布局为2x2网格 */
+.profit-data {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.profit-data .property {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+}
+
+.profit-data .property:nth-child(odd) {
+    border-right:none;
+    padding-right: 15px;
+}
+
+.profit-data .property:nth-child(even) {
+    padding-left: 15px;
+}
+
+.profit-data .property:nth-child(-n+2) {
+    border-bottom:0.12;
+}
+
+.profit-data .property:nth-child(n+3) {
+    border-bottom: none;
+}
+        
+        .profit-data .property-label {
+            color: #ecf0f1;
+            font-size: 0.9rem;
+        }
+        
+        .profit-data .property-value {
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        /* 新增：最优收益子区块 */
+        .optimal-profit {
+            background-color: #2c3e50;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+        }
+        
+        .optimal-profit h4 {
+            color: #f39c12;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .optimal-profit .property {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+        }
+        
+        .optimal-profit .property-label {
+            color: #bdc3c7;
+            font-size: 0.8rem;
+        }
+        
+        .optimal-profit .property-value {
+            color: #f39c12;
+            font-weight: bold;
+            font-size: 0.8rem;
         }
         
         .wear-indicator {
@@ -762,6 +1075,11 @@
             .materials-list {
                 grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             }
+            
+            /* 响应式布局调整合成结果区块 */
+            .synthesis-result {
+                grid-template-columns: 1fr;
+            }
         }
         
         @media (max-width: 768px) {
@@ -863,7 +1181,7 @@
         <div class="result-section" id="result-section" style="display: none;">
             <h2>合成结果</h2>
             <div class="synthesis-result">
-                <!-- 左右互换：概率分布在左，合成物品在右 -->
+                <!-- 概率分布在左，合成物品在中间，本炉收益在右 -->
                 <div class="probability-section">
                     <h3>所有可能结果</h3>
                     <p style="text-align: center; margin-bottom: 15px; color: #bdc3c7;">点击选择查看详情</p>
@@ -877,6 +1195,46 @@
                         <!-- 合成结果将通过JavaScript动态生成 -->
                     </div>
                 </div>
+               <!-- 修改后的收益区块 -->
+<div class="profit-section">
+    <h3>本炉收益</h3>
+    <div class="profit-data">
+        <!-- 第一行：本炉成本和理论期望收益 -->
+        <div class="property">
+            <span class="property-label">本炉成本</span>
+            <span class="property-value" id="total-cost">0</span>
+        </div>
+        <div class="property">
+            <span class="property-label">理论期望收益</span>
+            <span class="property-value" id="expected-profit">0</span>
+        </div>
+        <!-- 第二行：数学收益期望和保本率 -->
+        <div class="property">
+            <span class="property-label">数学收益期望</span>
+            <span class="property-value" id="profit-expectation">0</span>
+        </div>
+        <div class="property">
+            <span class="property-label">保本率</span>
+            <span class="property-value" id="break-even-rate">0%</span>
+        </div>
+    </div>
+    <!-- 最优收益子区块保持不变 -->
+    <div class="optimal-profit">
+        <h4>最优收益</h4>
+        <div class="property">
+            <span class="property-label">最高价值物品</span>
+            <span class="property-value" id="best-item">-</span>
+        </div>
+        <div class="property">
+            <span class="property-label">价值</span>
+            <span class="property-value" id="best-value">0</span>
+        </div>
+        <div class="property">
+            <span class="property-label">概率</span>
+            <span class="property-value" id="best-probability">0%</span>
+        </div>
+    </div>
+</div>
             </div>
         </div>
         
@@ -951,7 +1309,7 @@ const itemDatabase = [
     { id: 57, name: "新星 | 一见青心", minWear: 0, maxWear: 1, sources: ["“狂牙大行动”武器箱"], grade: 4 },
     { id: 58, name: "USP 消音版 | 小绿怪", minWear: 0, maxWear: 0.7, sources: ["“狂牙大行动”武器箱"], grade: 3 },
     { id: 59, name: "AWP | 亡灵之主", minWear: 0, maxWear: 1, sources: ["“狂牙大行动”武器箱"], grade: 4 },
-    { id: 60, name: "FN57 | 童话城堡", minWear: 0, maxWear: 0.02, sources: ["“狂牙大行动”武器箱"], grade: 3 },
+    { id: 60, name: "FN57 | 童话城堡", minWear: 0.02, maxWear: 0.9, sources: ["“狂牙大行动”武器箱"], grade: 3 },
     { id: 61, name: "M4A4 | 赛博", minWear: 0, maxWear: 0.9, sources: ["“狂牙大行动”武器箱"], grade: 3 },
     { id: 62, name: "UMP-45 | 金铋辉煌", minWear: 0, maxWear: 0.7, sources: ["“狂牙大行动”武器箱"], grade: 4 },
     { id: 63, name: "格洛克 18 型 | 黑色魅影", minWear: 0, maxWear: 1, sources: ["“狂牙大行动”武器箱"], grade: 2 },
@@ -984,7 +1342,7 @@ const itemDatabase = [
     { id: 90, name: "FN57 | 狩猎利器", minWear: 0, maxWear: 1, sources: ["“突围大行动”武器箱"], grade: 3 },
     { id: 91, name: "CZ75 | 猛虎", minWear: 0, maxWear: 1, sources: ["“突围大行动”武器箱"], grade: 4 },
     { id: 92, name: "新星 | 锦鲤", minWear: 0, maxWear: 0.3, sources: ["“突围大行动”武器箱"], grade: 4 },
-    { id: 93, name: "P90 | 二西莫夫", minWear: 0, maxWear: 0.82, sources: ["“突围大行动”武器箱"], grade: 2 },
+    { id: 93, name: "P90 | 二西莫夫", minWear: 0, maxWear: 0.92, sources: ["“突围大行动”武器箱"], grade: 2 },
     { id: 94, name: "M4A1 消音型 | 次时代", minWear: 0, maxWear: 0.5, sources: ["“突围大行动”武器箱"], grade: 2 },
     { id: 95, name: "P250 | 超新星", minWear: 0, maxWear: 0.4, sources: ["“突围大行动”武器箱"], grade: 4 },
     { id: 96, name: "MAG-7 | 灼烧之痕", minWear: 0.06, maxWear: 0.49, sources: ["“先锋大行动”武器箱"], grade: 5 },
@@ -2450,6 +2808,151 @@ const itemDatabase = [
     { id: 1563, name: "穿肠刀（★） | 森林DDPAT", minWear: 0.06, maxWear: 0.8, sources: ["反恐精英武器箱", "反恐精英 2 号武器箱", "反恐精英 3 号武器箱", "“英勇大行动”武器箱", "“凤凰大行动”武器箱", "“先锋大行动”武器箱", "左轮武器箱", "冬季攻势武器箱", "电竞 2013 武器箱", "电竞 2013 冬季武器箱", "电竞 2014 夏季武器箱"], grade: 1 },
     { id: 1564, name: "折叠刀（★） | 森林DDPAT", minWear: 0.06, maxWear: 0.8, sources: ["反恐精英武器箱", "反恐精英 2 号武器箱", "反恐精英 3 号武器箱", "“英勇大行动”武器箱", "“凤凰大行动”武器箱", "“先锋大行动”武器箱", "左轮武器箱", "冬季攻势武器箱", "电竞 2013 武器箱", "电竞 2013 冬季武器箱", "电竞 2014 夏季武器箱"], grade: 1 },
 ];
+
+        // ===== 本地价格数据库功能 =====
+// 使用localStorage持久化存储
+const PRICE_DB_KEY = 'csgo_calculator_price_database';
+
+// 初始化或加载本地价格数据库
+function initializePriceDatabase() {
+    const stored = localStorage.getItem(PRICE_DB_KEY);
+    if (stored) {
+        return JSON.parse(stored);
+    } else {
+        // 初始化为空数据库
+        const initialDb = {};
+        localStorage.setItem(PRICE_DB_KEY, JSON.stringify(initialDb));
+        return initialDb;
+    }
+}
+
+// 保存价格数据库到localStorage
+function savePriceDatabase(db) {
+    localStorage.setItem(PRICE_DB_KEY, JSON.stringify(db));
+}
+
+// 获取物品价格（根据物品名称和磨损区间）
+function getItemPrice(itemName, wearRange) {
+    const db = initializePriceDatabase();
+    const key = `${itemName}_${wearRange}`;
+    const priceData = db[key];
+    
+    // 确保返回的价格数据与请求的磨损区间完全匹配
+    if (priceData && priceData.wearRange === wearRange) {
+        return priceData;
+    }
+    
+    return null;
+}
+
+// 设置物品价格
+function setItemPrice(itemName, wearRange, price) {
+    const db = initializePriceDatabase();
+    const key = `${itemName}_${wearRange}`;
+    db[key] = {
+        itemName: itemName,
+        wearRange: wearRange,
+        price: price,
+        lastUpdated: new Date().toISOString()
+    };
+    savePriceDatabase(db);
+}
+
+// 获取物品的所有磨损区间价格
+function getItemAllPrices(itemName) {
+    const db = initializePriceDatabase();
+    const result = {};
+    
+    Object.keys(db).forEach(key => {
+        if (key.startsWith(`${itemName}_`)) {
+            const data = db[key];
+            result[data.wearRange] = data.price;
+        }
+    });
+    
+    return result;
+}
+
+// 搜索物品价格（模糊匹配）
+function searchItemPrices(searchTerm) {
+    const db = initializePriceDatabase();
+    const results = [];
+    
+    Object.keys(db).forEach(key => {
+        const data = db[key];
+        if (data.itemName.toLowerCase().includes(searchTerm.toLowerCase())) {
+            results.push({
+                itemName: data.itemName,
+                wearRange: data.wearRange,
+                price: data.price,
+                lastUpdated: data.lastUpdated
+            });
+        }
+    });
+    
+    return results;
+}
+
+// 删除物品价格
+function removeItemPrice(itemName, wearRange) {
+    const db = initializePriceDatabase();
+    const key = `${itemName}_${wearRange}`;
+    if (db[key]) {
+        delete db[key];
+        savePriceDatabase(db);
+        return true;
+    }
+    return false;
+}
+
+// 获取数据库统计信息
+function getDatabaseStats() {
+    const db = initializePriceDatabase();
+    const itemCount = Object.keys(db).length;
+    const items = {};
+    
+    Object.keys(db).forEach(key => {
+        const data = db[key];
+        if (!items[data.itemName]) {
+            items[data.itemName] = 0;
+        }
+        items[data.itemName]++;
+    });
+    
+    const uniqueItemCount = Object.keys(items).length;
+    
+    return {
+        totalEntries: itemCount,
+        uniqueItems: uniqueItemCount,
+        items: items
+    };
+}
+
+// 根据磨损值获取磨损区间名称
+function getWearRangeName(wear) {
+    if (wear < 0.07) return "崭新出厂";
+    if (wear < 0.15) return "略有磨损";
+    if (wear < 0.38) return "久经沙场";
+    if (wear < 0.45) return "破损不堪";
+    return "战痕累累";
+}
+
+// 获取磨损区间的数值范围
+function getWearRangeValues(wearRangeName) {
+    const ranges = {
+        "崭新出厂": { min: 0, max: 0.07 },
+        "略有磨损": { min: 0.07, max: 0.15 },
+        "久经沙场": { min: 0.15, max: 0.38 },
+        "破损不堪": { min: 0.38, max: 0.45 },
+        "战痕累累": { min: 0.45, max: 1.00 }
+    };
+    return ranges[wearRangeName] || { min: 0, max: 1 };
+}
+
+// 初始化数据库
+let priceDatabase = initializePriceDatabase();
+// ===== 本地价格数据库功能结束 =====
+
         // 磨损区间函数
         function getWearCategory(wear) {
             if (wear < 0.07) return { 
@@ -2779,6 +3282,31 @@ function updateTargetWearLimits(selectedItem) {
     });
 }
 
+// 更新所有相同物品和相同磨损区间的成本显示
+function updateAllCostDisplays(itemName, wearRange, price) {
+    const itemCount = currentMode === 'forge' ? 5 : 10;
+    
+    for (let i = 1; i <= itemCount; i++) {
+        const itemInput = document.getElementById(`item${i}`);
+        const wearInput = document.getElementById(`wear${i}`);
+        const costInput = document.getElementById(`cost-input${i}`);
+        
+        if (itemInput && wearInput && costInput) {
+            const currentItemName = itemInput.value.trim();
+            const currentWearValue = parseFloat(wearInput.value);
+            
+            // 只有当物品名称相同且磨损区间相同时才更新
+            if (currentItemName === itemName && !isNaN(currentWearValue)) {
+                const currentWearRange = getWearRangeName(currentWearValue);
+                
+                if (currentWearRange === wearRange) {
+                    costInput.value = price;
+                }
+            }
+        }
+    }
+}
+
 // 验证目标磨损值输入
 function validateTargetWearInput(selectedItem) {
     const targetWearInput = document.getElementById('target-wear');
@@ -3001,176 +3529,239 @@ function switchMode(mode) {
         }
     }
 }
-        // 更新物品输入框数量
-        function updateItemInputs() {
-            const itemInputsContainer = document.getElementById('item-inputs');
-            const itemCount = currentMode === 'forge' ? 5 : 10;
+// 更新物品输入框数量
+function updateItemInputs() {
+    const itemInputsContainer = document.getElementById('item-inputs');
+    const itemCount = currentMode === 'forge' ? 5 : 10;
+    
+    // 更新容器类名
+    itemInputsContainer.className = currentMode === 'forge' ? 
+        'items-container' : 'items-container practice-mode';
+    
+    // 清空现有输入框
+    itemInputsContainer.innerHTML = '';
+    
+    // 生成新的输入框
+    for (let i = 1; i <= itemCount; i++) {
+        const itemCard = document.createElement('div');
+        itemCard.className = 'item-card';
+        itemCard.id = `item-card-${i}`;
+        
+        itemCard.innerHTML = `
+            <div class="item-header">
+                <div class="item-number">物品 ${i}</div>
+                <div class="level-indicator" id="level-indicator${i}">等级: -</div>
+                <div class="cost-indicator" id="cost-indicator${i}">
+                    <span>成本:</span>
+                    <div class="cost-input-group">
+                        <input type="number" id="cost-input${i}" class="cost-input" placeholder="0" min="0" step="0.01">
+                        <button class="save-cost-btn" id="save-cost-btn${i}" title="保存价格">√</button>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <label for="item${i}">物品名称</label>
+                <div class="autocomplete input-with-dropdown">
+                    <input type="text" id="item${i}" class="item-input" placeholder="输入物品名称" autocomplete="off">
+                    <button class="dropdown-btn" id="item${i}-dropdown-btn" style="display: none;">▼</button>
+                </div>
+                <div class="error-message" id="item-error${i}">请选择有效的物品（${currentMode === 'forge' ? '等级必须为2' : '等级需大于2'}）</div>
+            </div>
+            <div>
+                <label for="wear${i}">磨损值</label>
+                <input type="number" id="wear${i}" min="0" max="1" step="0.01" placeholder="0.00 - 1.00" disabled>
+                <div class="error-message" id="wear-error${i}">磨损值超出物品允许范围</div>
+                <div class="success-message" id="wear-success${i}">磨损值在允许范围内</div>
+            </div>
+            <div class="item-properties" id="properties${i}" style="display: none;">
+                <div class="property">
+                    <span class="property-label">最低磨损</span>
+                    <span class="property-value" id="min-wear${i}">0.00</span>
+                </div>
+                <div class="property">
+                    <span class="property-label">最高磨损</span>
+                    <span class="property-value" id="max-wear${i}">0.00</span>
+                </div>
+                <div class="property">
+                    <span class="property-label">产出来源</span>
+                    <span class="property-value" id="source${i}">未知</span>
+                </div>
+                <div class="property">
+                    <span class="property-label">物品等级</span>
+                    <span class="property-value" id="grade${i}">0</span>
+                </div>
+            </div>
+        `;
+        
+        itemInputsContainer.appendChild(itemCard);
+        
+        // 为物品输入框添加自动完成功能
+        const itemInput = document.getElementById(`item${i}`);
+        autocomplete(itemInput, filteredItems);
+        
+        // 为下拉按钮添加点击事件
+        const dropdownBtn = document.getElementById(`item${i}-dropdown-btn`);
+        dropdownBtn.addEventListener('click', function() {
+            // 如果目标物品存在，使用过滤后的列表；否则使用全部物品
+            const itemsToShow = targetItem ? filteredItems : 
+                (currentMode === 'forge' ? 
+                    itemDatabase.filter(item => item.grade === 2) : 
+                    itemDatabase.filter(item => item.grade > 2)
+                );
+            showDropdown(itemInput, itemsToShow);
+        });
+        
+        // 为物品输入框添加事件监听
+        const wearInput = document.getElementById(`wear${i}`);
+        const propertiesDiv = document.getElementById(`properties${i}`);
+        const levelIndicator = document.getElementById(`level-indicator${i}`);
+        const costInput = document.getElementById(`cost-input${i}`);
+        const saveCostBtn = document.getElementById(`save-cost-btn${i}`);
+        
+        // 保存价格按钮点击事件
+saveCostBtn.addEventListener('click', function() {
+    const itemName = itemInput.value.trim();
+    const wearValue = parseFloat(wearInput.value);
+    const costValue = parseFloat(costInput.value);
+    
+    if (!itemName || isNaN(wearValue) || isNaN(costValue)) {
+        alert('请先选择物品并输入磨损值和成本！');
+        return;
+    }
+    
+    const selectedItem = itemDatabase.find(item => item.name === itemName);
+    if (!selectedItem) {
+        alert('物品不存在！');
+        return;
+    }
+    
+    // 获取当前磨损区间
+    const wearRange = getWearRangeName(wearValue);
+    
+    // 保存价格到数据库
+    setItemPrice(selectedItem.name, wearRange, costValue);
+    
+    // 更新所有相同物品和相同磨损区间的成本显示
+    updateAllCostDisplays(selectedItem.name, wearRange, costValue);
+    //价格保存成功提示
+    alert('价格保存成功！');
+});
+        
+        itemInput.addEventListener('change', function() {
+            const itemName = this.value.trim();
+            const selectedItem = itemDatabase.find(item => item.name === itemName);
             
-            // 更新容器类名
-            itemInputsContainer.className = currentMode === 'forge' ? 
-                'items-container' : 'items-container practice-mode';
+            const minGrade = currentMode === 'forge' ? 2 : 3;
+            const gradeCondition = currentMode === 'forge' ? 
+                (selectedItem && selectedItem.grade === 2) : 
+                (selectedItem && selectedItem.grade > 2);
             
-            // 清空现有输入框
-            itemInputsContainer.innerHTML = '';
-            
-            // 生成新的输入框
-            for (let i = 1; i <= itemCount; i++) {
-                const itemCard = document.createElement('div');
-                itemCard.className = 'item-card';
-                itemCard.id = `item-card-${i}`;
-                
-                itemCard.innerHTML = `
-                    <div class="item-header">
-                        <div class="item-number">物品 ${i}</div>
-                        <div class="level-indicator" id="level-indicator${i}">等级: -</div>
-                    </div>
-                    <div>
-                        <label for="item${i}">物品名称</label>
-                        <div class="autocomplete input-with-dropdown">
-                            <input type="text" id="item${i}" class="item-input" placeholder="输入物品名称" autocomplete="off">
-                            <button class="dropdown-btn" id="item${i}-dropdown-btn" style="display: none;">▼</button>
-                        </div>
-                        <div class="error-message" id="item-error${i}">请选择有效的物品（${currentMode === 'forge' ? '等级必须为2' : '等级需大于2'}）</div>
-                    </div>
-                    <div>
-                        <label for="wear${i}">磨损值</label>
-                        <input type="number" id="wear${i}" min="0" max="1" step="0.01" placeholder="0.00 - 1.00" disabled>
-                        <div class="error-message" id="wear-error${i}">磨损值超出物品允许范围</div>
-                        <div class="success-message" id="wear-success${i}">磨损值在允许范围内</div>
-                    </div>
-                    <div class="item-properties" id="properties${i}" style="display: none;">
-                        <div class="property">
-                            <span class="property-label">最低磨损</span>
-                            <span class="property-value" id="min-wear${i}">0.00</span>
-                        </div>
-                        <div class="property">
-                            <span class="property-label">最高磨损</span>
-                            <span class="property-value" id="max-wear${i}">0.00</span>
-                        </div>
-                        <div class="property">
-                            <span class="property-label">产出来源</span>
-                            <span class="property-value" id="source${i}">未知</span>
-                        </div>
-                        <div class="property">
-                            <span class="property-label">物品等级</span>
-                            <span class="property-value" id="grade${i}">0</span>
-                        </div>
-                    </div>
-                `;
-                
-                itemInputsContainer.appendChild(itemCard);
-                
-                // 为物品输入框添加自动完成功能
-                const itemInput = document.getElementById(`item${i}`);
-                autocomplete(itemInput, filteredItems);
-                
-                // 为下拉按钮添加点击事件
-                const dropdownBtn = document.getElementById(`item${i}-dropdown-btn`);
-                dropdownBtn.addEventListener('click', function() {
-                    // 如果目标物品存在，使用过滤后的列表；否则使用全部物品
-                    const itemsToShow = targetItem ? filteredItems : 
-                        (currentMode === 'forge' ? 
-                            itemDatabase.filter(item => item.grade === 2) : 
-                            itemDatabase.filter(item => item.grade > 2)
-                        );
-                    showDropdown(itemInput, itemsToShow);
-                });
-                
-                // 为物品输入框添加事件监听
-                const wearInput = document.getElementById(`wear${i}`);
-                const propertiesDiv = document.getElementById(`properties${i}`);
-                const levelIndicator = document.getElementById(`level-indicator${i}`);
-                
-                itemInput.addEventListener('change', function() {
-                    const itemName = this.value.trim();
-                    const selectedItem = itemDatabase.find(item => item.name === itemName);
-                    
-                    const minGrade = currentMode === 'forge' ? 2 : 3;
-                    const gradeCondition = currentMode === 'forge' ? 
-                        (selectedItem && selectedItem.grade === 2) : 
-                        (selectedItem && selectedItem.grade > 2);
-                    
-                    if (gradeCondition) {
-                        // 练枪模式下检查等级一致性
-                        if (currentMode === 'practice') {
-                            if (practiceModeGrade === null) {
-                                // 第一个选择的物品，设置等级限制
-                                practiceModeGrade = selectedItem.grade;
-                                updatePracticeModeFilter();
-                            } else if (selectedItem.grade !== practiceModeGrade) {
-                                // 等级不一致，显示错误
-                                document.getElementById(`item-error${i}`).style.display = 'block';
-                                document.getElementById(`item-error${i}`).textContent = `所有物品等级必须相同！当前限制为等级${practiceModeGrade}`;
-                                this.value = '';
-                                return;
-                            }
-                        }
-                        
-                        // 启用磨损值输入框
-                        wearInput.disabled = false;
-                        
-                        // 更新磨损值范围
-                        wearInput.min = selectedItem.minWear;
-                        wearInput.max = selectedItem.maxWear;
-                        wearInput.placeholder = `${selectedItem.minWear.toFixed(2)} - ${selectedItem.maxWear.toFixed(2)}`;
-                        
-                        // 更新等级指示器
-                        const gradeName = getGradeName(selectedItem.grade);
-                        const gradeClass = getGradeClass(selectedItem.grade);
-                        levelIndicator.innerHTML = `<span class="${gradeClass}">${gradeName}</span>`;
-                        
-                        // 显示物品属性
-                        document.getElementById(`min-wear${i}`).textContent = selectedItem.minWear.toFixed(2);
-                        document.getElementById(`max-wear${i}`).textContent = selectedItem.maxWear.toFixed(2);
-                        document.getElementById(`source${i}`).textContent = selectedItem.sources.join(', ');
-                        document.getElementById(`grade${i}`).textContent = gradeName;
-                        
-                        propertiesDiv.style.display = 'grid';
-                        
-                        // 隐藏物品错误消息
-                        document.getElementById(`item-error${i}`).style.display = 'none';
-                    } else {
-                        // 禁用磨损值输入框
-                        wearInput.disabled = true;
-                        wearInput.value = '';
-                        
-                        // 重置等级指示器
-                        levelIndicator.textContent = '等级: -';
-                        
-                        // 隐藏物品属性
-                        propertiesDiv.style.display = 'none';
-                        
-                        // 显示物品错误消息
+            if (gradeCondition) {
+                // 练枪模式下检查等级一致性
+                if (currentMode === 'practice') {
+                    if (practiceModeGrade === null) {
+                        // 第一个选择的物品，设置等级限制
+                        practiceModeGrade = selectedItem.grade;
+                        updatePracticeModeFilter();
+                    } else if (selectedItem.grade !== practiceModeGrade) {
+                        // 等级不一致，显示错误
                         document.getElementById(`item-error${i}`).style.display = 'block';
-                        document.getElementById(`item-error${i}`).textContent = `请选择有效的物品（${currentMode === 'forge' ? '等级必须为2' : '等级需大于2'}）`;
+                        document.getElementById(`item-error${i}`).textContent = `所有物品等级必须相同！当前限制为等级${practiceModeGrade}`;
+                        this.value = '';
+                        return;
                     }
-                    
-                    // 重置磨损值验证消息
+                }
+                
+                // 启用磨损值输入框
+                wearInput.disabled = false;
+                
+                // 更新磨损值范围
+                wearInput.min = selectedItem.minWear;
+                wearInput.max = selectedItem.maxWear;
+                wearInput.placeholder = `${selectedItem.minWear.toFixed(2)} - ${selectedItem.maxWear.toFixed(2)}`;
+                
+                // 更新等级指示器
+                const gradeName = getGradeName(selectedItem.grade);
+                const gradeClass = getGradeClass(selectedItem.grade);
+                levelIndicator.innerHTML = `<span class="${gradeClass}">${gradeName}</span>`;
+                
+                // 重置成本输入框为0，而不是尝试加载任何价格
+                costInput.value = 0;
+                
+                // 显示物品属性
+                document.getElementById(`min-wear${i}`).textContent = selectedItem.minWear.toFixed(2);
+                document.getElementById(`max-wear${i}`).textContent = selectedItem.maxWear.toFixed(2);
+                document.getElementById(`source${i}`).textContent = selectedItem.sources.join(', ');
+                document.getElementById(`grade${i}`).textContent = gradeName;
+                
+                propertiesDiv.style.display = 'grid';
+                
+                // 隐藏物品错误消息
+                document.getElementById(`item-error${i}`).style.display = 'none';
+            } else {
+                // 禁用磨损值输入框
+                wearInput.disabled = true;
+                wearInput.value = '';
+                
+                // 重置等级指示器
+                levelIndicator.textContent = '等级: -';
+                
+                // 重置成本输入框为0
+                costInput.value = 0;
+                
+                // 隐藏物品属性
+                propertiesDiv.style.display = 'none';
+                
+                // 显示物品错误消息
+                document.getElementById(`item-error${i}`).style.display = 'block';
+                document.getElementById(`item-error${i}`).textContent = `请选择有效的物品（${currentMode === 'forge' ? '等级必须为2' : '等级需大于2'}）`;
+            }
+            
+            // 重置磨损值验证消息
+            document.getElementById(`wear-error${i}`).style.display = 'none';
+            document.getElementById(`wear-success${i}`).style.display = 'none';
+        });
+        
+        // 为磨损值输入框添加事件监听
+        wearInput.addEventListener('input', function() {
+            const itemName = itemInput.value.trim();
+            const selectedItem = itemDatabase.find(item => item.name === itemName);
+            
+            if (selectedItem) {
+                const wearValue = parseFloat(this.value);
+                
+                if (this.value === '' || isNaN(wearValue)) {
+                    costInput.value = 0;
                     document.getElementById(`wear-error${i}`).style.display = 'none';
                     document.getElementById(`wear-success${i}`).style.display = 'none';
-                });
-                
-                // 为磨损值输入框添加事件监听
-                wearInput.addEventListener('input', function() {
-                    const itemName = itemInput.value.trim();
-                    const selectedItem = itemDatabase.find(item => item.name === itemName);
+                    return;
+                }
+
+                if (!isNaN(wearValue) && wearValue >= selectedItem.minWear && wearValue <= selectedItem.maxWear) {
+                    // 磨损值在允许范围内
+                    document.getElementById(`wear-error${i}`).style.display = 'none';
+                    document.getElementById(`wear-success${i}`).style.display = 'block';
                     
-                    if (selectedItem) {
-                        const wearValue = parseFloat(this.value);
-                        
-                        if (!isNaN(wearValue) && wearValue >= selectedItem.minWear && wearValue <= selectedItem.maxWear) {
-                            // 磨损值在允许范围内
-                            document.getElementById(`wear-error${i}`).style.display = 'none';
-                            document.getElementById(`wear-success${i}`).style.display = 'block';
-                        } else {
-                            // 磨损值超出允许范围
-                            document.getElementById(`wear-error${i}`).style.display = 'block';
-                            document.getElementById(`wear-success${i}`).style.display = 'none';
-                        }
+                    // 根据磨损值自动加载对应的价格
+                    const wearRange = getWearRangeName(wearValue);
+                    const priceData = getItemPrice(selectedItem.name, wearRange);
+                    
+                    // 只有当确切磨损区间有价格时才显示，否则显示0
+                    if (priceData && priceData.wearRange === wearRange) {
+                        costInput.value = priceData.price;
+                    } else {
+                        costInput.value = 0; // 显示0而不是其他磨损区间的价格
                     }
-                });
+                } else {
+                    // 磨损值超出允许范围
+                    document.getElementById(`wear-error${i}`).style.display = 'block';
+                    document.getElementById(`wear-success${i}`).style.display = 'none';
+                }
             }
-        }
+        });
+    }
+}
+//updateItemInputs函数结束
 
         // 更新练枪模式下的物品过滤
         function updatePracticeModeFilter() {
@@ -3188,70 +3779,148 @@ function switchMode(mode) {
             }
         }
 
-        // 重置所有输入
-        function resetAllInputs() {
-            const itemCount = currentMode === 'forge' ? 5 : 10;
+// 重置所有输入
+function resetAllInputs() {
+    const itemCount = currentMode === 'forge' ? 5 : 10;
+    
+    for (let i = 1; i <= itemCount; i++) {
+        const itemInput = document.getElementById(`item${i}`);
+        const wearInput = document.getElementById(`wear${i}`);
+        const propertiesDiv = document.getElementById(`properties${i}`);
+        const levelIndicator = document.getElementById(`level-indicator${i}`);
+        const costInput = document.getElementById(`cost-input${i}`);
+        
+        if (itemInput) {
+            itemInput.value = '';
+            wearInput.value = '';
+            wearInput.disabled = true;
+            if (propertiesDiv) propertiesDiv.style.display = 'none';
+            if (levelIndicator) levelIndicator.textContent = '等级: -';
+            if (costInput) costInput.value = '';
             
-            for (let i = 1; i <= itemCount; i++) {
-                const itemInput = document.getElementById(`item${i}`);
-                const wearInput = document.getElementById(`wear${i}`);
-                const propertiesDiv = document.getElementById(`properties${i}`);
-                const levelIndicator = document.getElementById(`level-indicator${i}`);
-                
-                if (itemInput) {
-                    itemInput.value = '';
-                    wearInput.value = '';
-                    wearInput.disabled = true;
-                    if (propertiesDiv) propertiesDiv.style.display = 'none';
-                    if (levelIndicator) levelIndicator.textContent = '等级: -';
-                    
-                    // 隐藏所有错误消息
-                    const itemError = document.getElementById(`item-error${i}`);
-                    const wearError = document.getElementById(`wear-error${i}`);
-                    const wearSuccess = document.getElementById(`wear-success${i}`);
-                    
-                    if (itemError) itemError.style.display = 'none';
-                    if (wearError) wearError.style.display = 'none';
-                    if (wearSuccess) wearSuccess.style.display = 'none';
-                    
-                    // 隐藏下拉按钮
-                    const dropdownBtn = document.getElementById(`item${i}-dropdown-btn`);
-                    if (dropdownBtn) {
-                        dropdownBtn.style.display = 'none';
-                    }
-                }
+            // 隐藏所有错误消息
+            const itemError = document.getElementById(`item-error${i}`);
+            const wearError = document.getElementById(`wear-error${i}`);
+            const wearSuccess = document.getElementById(`wear-success${i}`);
+            
+            if (itemError) itemError.style.display = 'none';
+            if (wearError) wearError.style.display = 'none';
+            if (wearSuccess) wearSuccess.display = 'none';
+            
+            // 隐藏下拉按钮
+            const dropdownBtn = document.getElementById(`item${i}-dropdown-btn`);
+            if (dropdownBtn) {
+                dropdownBtn.style.display = 'none';
             }
-            
-            // 清空目标物品和磨损值
-            document.getElementById('target-item').value = '';
-            document.getElementById('target-wear').value = '';
-            document.getElementById('target-item-error').style.display = 'none';
-            document.getElementById('target-wear-error').style.display = 'none';
-            targetItem = null;
-            
-            // 重置过滤条件
-            if (currentMode === 'forge') {
-                filteredItems = itemDatabase.filter(item => item.grade === 2);
-            } else {
-                filteredItems = itemDatabase.filter(item => item.grade > 2);
-                practiceModeGrade = null;
-            }
-            
-            // 隐藏可用合成材料区域
-            document.getElementById('available-materials').style.display = 'none';
-            
-            // 隐藏结果区域
-            document.getElementById('result-section').style.display = 'none';
-            document.getElementById('reverse-result').style.display = 'none';
-            
-            // 隐藏应用所需磨损按钮
-            document.getElementById('apply-wear').style.display = 'none';
-            // 清除反向计算结果
-            lastReverseResult = null;
-         
         }
+    }
+    
+    // 清空目标物品和磨损值
+    document.getElementById('target-item').value = '';
+    document.getElementById('target-wear').value = '';
+    document.getElementById('target-item-error').style.display = 'none';
+    document.getElementById('target-wear-error').style.display = 'none';
+    targetItem = null;
+    
+    // 重置过滤条件
+    if (currentMode === 'forge') {
+        filteredItems = itemDatabase.filter(item => item.grade === 2);
+    } else {
+        filteredItems = itemDatabase.filter(item => item.grade > 2);
+        practiceModeGrade = null;
+    }
+    
+    // 隐藏可用合成材料区域
+    document.getElementById('available-materials').style.display = 'none';
+    
+    // 隐藏结果区域
+    document.getElementById('result-section').style.display = 'none';
+    document.getElementById('reverse-result').style.display = 'none';
+    
+    // 隐藏应用所需磨损按钮
+    document.getElementById('apply-wear').style.display = 'none';
+    // 清除反向计算结果
+    lastReverseResult = null;
+}
+
+// 计算本炉收益相关数据
+function calculateProfitData(inputItems, results) {
+    // 计算本炉成本（所有输入物品成本之和）
+    let totalCost = 0;
+    for (let i = 1; i <= inputItems.length; i++) {
+        const costInput = document.getElementById(`cost-input${i}`);
+        if (costInput && costInput.value) {
+            totalCost += parseFloat(costInput.value) || 0;
+        }
+    }
+    
+    // 计算理论期望收益（所有可能结果的概率加权平均值）
+    let expectedProfit = 0;
+    let bestItem = null;
+    let bestValue = 0;
+    let bestProbability = 0;
+    
+    // 计算保本率（价格大于成本的物品概率之和）
+    let breakEvenProbability = 0;
+    
+    results.forEach(result => {
+        const wearRange = getWearRangeName(result.wear);
+        const priceData = getItemPrice(result.item.name, wearRange);
+        const price = priceData ? priceData.price : 0;
+        
+        // 累加期望收益
+        expectedProfit += price * result.probability;
+        
+        // 寻找最优收益物品
+        if (price > bestValue) {
+            bestValue = price;
+            bestItem = result.item.name;
+            bestProbability = result.probability;
+        }
+        
+        // 计算保本率：如果物品价格大于成本，累加其概率
+        if (price > totalCost) {
+            breakEvenProbability += result.probability;
+        }
+    });
+    
+    // 计算数学收益期望：理论期望收益 / 本炉成本
+    const profitExpectation = totalCost > 0 ? (expectedProfit / totalCost) : 0;
+    
+    // 计算保本率（百分比）
+    const breakEvenRate = breakEvenProbability * 100;
+    
+    return {
+        totalCost: totalCost,
+        expectedProfit: expectedProfit,
+        profitExpectation: profitExpectation,
+        breakEvenRate: breakEvenRate,
+        bestItem: bestItem,
+        bestValue: bestValue,
+        bestProbability: bestProbability
+    };
+}
+
+       // 显示本炉收益数据
+function displayProfitData(profitData) {
+    document.getElementById('total-cost').textContent = profitData.totalCost.toFixed(2);
+    document.getElementById('expected-profit').textContent = profitData.expectedProfit.toFixed(2);
+    
+    // 数学收益期望显示为百分比格式
+    const profitExpectationPercent = (profitData.profitExpectation * 100).toFixed(2);
+    document.getElementById('profit-expectation').textContent = profitExpectationPercent + '%';
+    
+    // 保本率显示
+    document.getElementById('break-even-rate').textContent = profitData.breakEvenRate.toFixed(2) + '%';
+    
+    // 显示最优收益数据
+    document.getElementById('best-item').textContent = profitData.bestItem || '-';
+    document.getElementById('best-value').textContent = profitData.bestValue.toFixed(2);
+    document.getElementById('best-probability').textContent = (profitData.bestProbability * 100).toFixed(2) + '%';
+}
 
         document.addEventListener('DOMContentLoaded', function() {
+            initializePriceDatabase();
             const calculateBtn = document.getElementById('calculate');
             const resetBtn = document.getElementById('reset');
             const reverseCalculateBtn = document.getElementById('reverse-calculate');
@@ -3482,6 +4151,10 @@ targetItemInput.addEventListener('change', function() {
                 // 计算合成结果
                 currentResults = calculateAllSynthesisResults(inputItems);
                 
+                // 计算并显示本炉收益数据
+                const profitData = calculateProfitData(inputItems, currentResults);
+                displayProfitData(profitData);
+                
                 // 显示结果
                 displaySynthesisResults(currentResults);
                 resultSection.style.display = 'block';
@@ -3640,53 +4313,135 @@ function calculateSynthesizedWear(inputItems, synthesizedItem) {
 }
             
             // 显示所有合成结果的函数
-            function displaySynthesisResults(results) {
-                // 默认选择第一个结果
-                if (results.length > 0) {
-                    displaySelectedResult(results[0]);
-                }
-                
-                // 显示所有可能结果
-                probabilityList.innerHTML = '';
-                results.forEach((result, index) => {
-                    const wearCategory = getWearCategory(result.wear);
-                    
-                    const probabilityItem = document.createElement('div');
-                    probabilityItem.className = `probability-item ${index === 0 ? 'selected' : ''}`;
-                    probabilityItem.dataset.index = index;
-                    
-                    probabilityItem.innerHTML = `
-                        <div>
-                            <span class="wear-indicator" style="background-color: ${wearCategory.color}"></span>
-                            ${result.item.name}
-                        </div>
-                        <div>${(result.probability * 100).toFixed(2)}%</div>
-                        <div>${result.wear.toFixed(4)}</div>
-                        <div class="${wearCategory.textClass}">${wearCategory.name}</div>
-                    `;
-                    
-                    probabilityItem.addEventListener('click', function() {
-                        // 移除所有选中状态
-                        document.querySelectorAll('.probability-item').forEach(item => {
-                            item.classList.remove('selected');
-                        });
-                        
-                        // 添加当前选中状态
-                        this.classList.add('selected');
-                        
-                        // 显示选中的结果
-                        const selectedIndex = parseInt(this.dataset.index);
-                        displaySelectedResult(results[selectedIndex]);
-                    });
-                    
-                    probabilityList.appendChild(probabilityItem);
-                });
+function displaySynthesisResults(results) {
+    // 默认选择第一个结果
+    if (results.length > 0) {
+        displaySelectedResult(results[0]);
+    }
+    
+    // 显示所有可能结果
+    probabilityList.innerHTML = '';
+    results.forEach((result, index) => {
+        const wearCategory = getWearCategory(result.wear);
+        const wearRangeName = getWearRangeName(result.wear);
+        
+        // 从本地数据库获取已保存的价格
+        const priceData = getItemPrice(result.item.name, wearRangeName);
+        const savedPrice = priceData ? priceData.price : '';
+        
+        const probabilityItem = document.createElement('div');
+        probabilityItem.className = `probability-item ${index === 0 ? 'selected' : ''}`;
+        probabilityItem.dataset.index = index;
+        
+        probabilityItem.innerHTML = `
+            <div>
+                <span class="wear-indicator" style="background-color: ${wearCategory.color}"></span>
+                ${result.item.name}
+            </div>
+            <div>${(result.probability * 100).toFixed(2)}%</div>
+            <div>${result.wear.toFixed(4)}</div>
+            <div class="${wearCategory.textClass}">${wearCategory.name}</div>
+            <div class="probability-price-input">
+                <input type="number" 
+                       class="probability-price" 
+                       placeholder="价格" 
+                       value="${savedPrice}" 
+                       min="0" 
+                       step="0.01"
+                       data-item-name="${result.item.name}"
+                       data-wear-range="${wearRangeName}">
+                <button class="probability-save-btn" title="保存价格">√</button>
+            </div>
+        `;
+        
+        // 为概率项添加点击事件
+        probabilityItem.addEventListener('click', function(e) {
+            // 如果点击的是价格输入框或保存按钮，不触发选中
+            if (e.target.classList.contains('probability-price') || 
+                e.target.classList.contains('probability-save-btn')) {
+                return;
             }
             
+            // 移除所有选中状态
+            document.querySelectorAll('.probability-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // 添加当前选中状态
+            this.classList.add('selected');
+            
+            // 显示选中的结果
+            const selectedIndex = parseInt(this.dataset.index);
+            displaySelectedResult(results[selectedIndex]);
+        });
+        
+        // 为保存按钮添加点击事件
+        const saveBtn = probabilityItem.querySelector('.probability-save-btn');
+        const priceInput = probabilityItem.querySelector('.probability-price');
+        
+        saveBtn.addEventListener('click', function(e) {
+            e.stopPropagation(); // 阻止事件冒泡，避免触发概率项点击事件
+            
+            const itemName = priceInput.dataset.itemName;
+            const wearRange = priceInput.dataset.wearRange;
+            const priceValue = parseFloat(priceInput.value);
+            
+            if (!itemName || isNaN(priceValue) || priceValue < 0) {
+                alert('请输入有效的价格！');
+                return;
+            }
+            
+            // 保存价格到数据库
+            setItemPrice(itemName, wearRange, priceValue);
+            
+            // 更新所有相同物品和相同磨损区间的价格显示
+            updateAllProbabilityPriceDisplays(itemName, wearRange, priceValue);
+            
+            // 更新本炉收益数据
+            if (currentResults.length > 0) {
+                const profitData = calculateProfitData(inputItems, currentResults);
+                displayProfitData(profitData);
+            }
+            
+            alert('价格保存成功！');
+        });
+        
+        // 为价格输入框添加输入事件，实时更新本炉收益
+        priceInput.addEventListener('input', function(e) {
+            e.stopPropagation(); // 阻止事件冒泡
+            
+            // 延迟计算，避免频繁计算
+            clearTimeout(priceInput._timeout);
+            priceInput._timeout = setTimeout(() => {
+                if (currentResults.length > 0) {
+                    const profitData = calculateProfitData(inputItems, currentResults);
+                    displayProfitData(profitData);
+                }
+            }, 500);
+        });
+        
+        probabilityList.appendChild(probabilityItem);
+    });
+}
+
+// 更新所有相同物品和相同磨损区间的价格显示
+function updateAllProbabilityPriceDisplays(itemName, wearRange, price) {
+    document.querySelectorAll('.probability-price').forEach(input => {
+        if (input.dataset.itemName === itemName && input.dataset.wearRange === wearRange) {
+            input.value = price;
+        }
+    });
+}
+
             // 显示选中结果的函数
 function displaySelectedResult(result) {
     const wearCategory = getWearCategory(result.wear);
     const gradeClass = getGradeClass(result.item.grade);
+    const wearRangeName = getWearRangeName(result.wear);
+    
+    // 尝试从本地数据库获取价格
+    const priceData = getItemPrice(result.item.name, wearRangeName);
+    const priceDisplay = priceData ? `¥${priceData.price}` : '暂无价格数据';
     
     synthesisResult.innerHTML = `
         <div class="property">
@@ -3721,10 +4476,13 @@ function displaySelectedResult(result) {
             <span class="property-label">出现概率</span>
             <span class="property-value">${(result.probability * 100).toFixed(2)}%</span>
         </div>
+        <div class="property">
+            <span class="property-label">参考价格</span>
+            <span class="property-value">${priceDisplay}</span>
+        </div>
     `;
 }
             
-            // 显示反向计算结果的函数
           // 显示反向计算结果的函数
 function displayReverseResult(inputItems, requiredWears) {
     let resultHTML = '';
